@@ -33,6 +33,7 @@ AiWork/
 ├── README.md             # 人看的：怎么装、怎么跑
 ├── app.py                # Streamlit 主界面（P1 负责）
 ├── orchestrator.py        # 编排：串起 4 个 Agent（P1 负责）
+├── test_run.py            # 命令行全链路测试（不用装 streamlit 也能跑）
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
 ├── agents/                # Agent 模块
@@ -54,11 +55,13 @@ AiWork/
     ├── 分工_P1_编排与集成.md
     ├── 分工_P2_数据与检索.md
     ├── 分工_P3_画像与生成.md
-    └── 分工_P4_审核与评估.md
+    ├── 分工_P4_审核与评估.md
+    └── 新成员培训_环境工具搭建.md  # 新人入组环境配置指南
 ```
 
 ## 硬规则
 
+- **运行任何 Python 前先激活 venv**：`source venv/bin/activate`（macOS）或 `.venv\Scripts\activate`（Windows），否则找不到依赖。VS Code 已配好 `.vscode/settings.json` 自动激活。
 - **密钥只放 `.env`，永不写进代码、永不提交。** 代码里用 `os.getenv()` 读。
 - **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先同步 P1。
 - **先搭骨架再填肉**：新模块先写返回假数据的 stub，让全链路能跑通，再换真实实现。
@@ -70,10 +73,11 @@ AiWork/
 |---|---|
 | 项目背景、五大研究方向、评分维度、4 人分工 | `docs/项目背景.md` |
 | 每个 Agent 的输入输出 JSON 契约 | `docs/接口约定.md` |
-| 完整研究方案（含提示词技巧） | `智策育训_项目研究方案.md` |
-| 比赛原始要求 | 根目录 PDF |
+| 完整研究方案（含提示词技巧） | `docs/项目研究方案.md` |
+| 比赛原始要求 | `docs/比赛方案.pdf` |
 | 怎么安装运行 | `README.md` |
 | P1 详版分工（编排 + 集成 + 界面 + 七周计划） | `docs/分工_P1_编排与集成.md` |
 | P2 详版分工（数据 + 知识库 + 检索 + 七周计划） | `docs/分工_P2_数据与检索.md` |
 | P3 详版分工（画像 + 生成 + 个性化 + 七周计划） | `docs/分工_P3_画像与生成.md` |
 | P4 详版分工（三层审核 + 评测 + 闭环 + 七周计划） | `docs/分工_P4_审核与评估.md` |
+| 新人入组：装环境、配工具、Git/VS Code/API 申请 | `docs/新成员培训_环境工具搭建.md` |
