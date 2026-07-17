@@ -35,16 +35,26 @@ AiWork/
 ├── orchestrator.py        # 编排：串起 4 个 Agent（P1 负责）
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
-├── agents/                # 4 个 Agent，每人一个文件
+├── agents/                # Agent 模块
 │   ├── retrieval.py       # 知识检索 Agent（P2）
 │   ├── profile.py         # 画像 Agent（P3）
 │   ├── generator.py       # 内容生成 Agent（P3）
-│   └── reviewer.py        # 三层审核 Agent（P4）
-├── knowledge_base/        # ChromaDB 建库脚本 + 知识图谱（P2）
+│   ├── reviewer.py        # 三层审核 Agent（P4）
+│   ├── evaluator.py       # 效果评估模块（P4）
+│   └── simulated_learner.py  # 仿真学员（P4，仅评测用）
+├── knowledge_base/        # 知识库（P2 + P3 共建）
+│   ├── build_chromadb.py  # 向量库建库脚本
+│   ├── build_kg.py        # 知识图谱构建脚本
+│   ├── skill_ontology.json # 岗位技能本体（P3）
+│   └── qa_test_set.json   # QA 评测集（P2）
 ├── data/                  # 制造业原始/清洗后数据（P2）
 └── docs/                  # 人看的文档
     ├── 项目背景.md         # vibe coding 时贴给 AI 的全局背景
-    └── 接口约定.md         # 模块间 JSON 契约（改前必读）
+    ├── 接口约定.md         # 模块间 JSON 契约（改前必读）
+    ├── 分工_P1_编排与集成.md
+    ├── 分工_P2_数据与检索.md
+    ├── 分工_P3_画像与生成.md
+    └── 分工_P4_审核与评估.md
 ```
 
 ## 硬规则
@@ -63,3 +73,7 @@ AiWork/
 | 完整研究方案（含提示词技巧） | `智策育训_项目研究方案.md` |
 | 比赛原始要求 | 根目录 PDF |
 | 怎么安装运行 | `README.md` |
+| P1 详版分工（编排 + 集成 + 界面 + 七周计划） | `docs/分工_P1_编排与集成.md` |
+| P2 详版分工（数据 + 知识库 + 检索 + 七周计划） | `docs/分工_P2_数据与检索.md` |
+| P3 详版分工（画像 + 生成 + 个性化 + 七周计划） | `docs/分工_P3_画像与生成.md` |
+| P4 详版分工（三层审核 + 评测 + 闭环 + 七周计划） | `docs/分工_P4_审核与评估.md` |
