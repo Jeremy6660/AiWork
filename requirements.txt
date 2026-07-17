@@ -1,0 +1,10 @@
+# 大模型 API（openai SDK 兼容国内各家：DeepSeek/通义/Kimi/GLM/豆包 都提供 OpenAI 兼容接口）
+openai>=1.0
+# 界面
+streamlit>=1.30
+# 向量库 / RAG
+chromadb>=0.4
+# 知识图谱
+networkx>=3.0
+# 读取 .env
+python-dotenv>=1.0
