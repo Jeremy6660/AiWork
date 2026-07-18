@@ -1,67 +1,81 @@
+"""人工全链路演示脚本。
+
+自动化验收请运行 ``pytest -q``。本脚本只展示三个代表场景；任何场景失败时
+返回非零退出码，不再打印“失败但跑通”的假阳性结论。
 """
-命令行快速测试脚本
-不用启动 Streamlit 也能跑全链路，验证骨架是否跑通。
-"""
+
+from __future__ import annotations
 
 from orchestrator import run
 
 
-def test_all_scenarios():
-    """测试多种场景，确保全链路跑通"""
-
-    # ---- 场景 1：冷启动（无答题记录） ----
-    print("=" * 60)
-    print("场景 1：冷启动 — 数控机床操作工（无答题记录）")
-    print("=" * 60)
-    result = run(岗位="数控机床操作工", question="数控机床安全操作")
-    _print_result(result)
-
-    # ---- 场景 2：有答题记录 — 弱项在 M 代码 ----
-    print("\n" + "=" * 60)
-    print("场景 2：有答题记录 — CNC 编程员")
-    print("=" * 60)
-    result = run(
-        岗位="CNC编程员",
-        答题记录=[
+SCENARIOS = [
+    {
+        "名称": "冷启动：数控机床操作工",
+        "岗位": "数控机床操作工",
+        "答题记录": [],
+        "主题": "数控机床安全操作",
+    },
+    {
+        "名称": "答题更新：CNC编程员",
+        "岗位": "CNC编程员",
+        "答题记录": [
             {"技能": "缺陷识别与排除", "正确": False},
             {"技能": "缺陷识别与排除", "正确": False},
             {"技能": "切削参数选择", "正确": True},
         ],
-        question="加工缺陷分析与排除",
+        "主题": "加工缺陷分析与排除",
+    },
+    {
+        "名称": "岗位差异：质检员",
+        "岗位": "质检员",
+        "答题记录": [],
+        "主题": "量具使用与质量检测",
+    },
+]
+
+
+def _print_result(result: dict) -> None:
+    print(f"流程状态：{result['流程状态']}")
+    print(f"目标技能：{'、'.join(result['画像'].get('目标技能', []))}")
+    print(f"知识命中：{len(result['知识列表'])} 条")
+    if result["培训内容"]:
+        print(
+            f"培训资源：[{result['培训内容']['类型']}] "
+            f"{result['培训内容']['标题']}"
+        )
+        print(f"生成模式：{result['培训内容']['生成模式']}")
+    print(
+        f"审核：{'通过' if result['审核通过'] else '未通过'} | "
+        f"幻觉分数={result['幻觉分数']:.2%} | 重新生成={result['重试次数']}"
     )
-    _print_result(result)
-
-    # ---- 场景 3：质检员 ----
-    print("\n" + "=" * 60)
-    print("场景 3：质检员")
-    print("=" * 60)
-    result = run(岗位="质检员", question="量具使用与质量检测")
-    _print_result(result)
-
-    print("\n" + "=" * 60)
-    print("✅ 所有场景测试完成！骨架跑通！")
-    print("=" * 60)
+    print(f"单份内容综合诊断：{result['评估结果']['综合分']:.2%}")
+    if result.get("失败原因"):
+        print(f"失败原因：{result['失败原因']}")
 
 
-def _print_result(result):
-    """打印结果摘要"""
-    print(f"画像: {result['画像']['岗位']}")
-    弱项 = sorted(result["画像"]["技能掌握度"], key=result["画像"]["技能掌握度"].get)[:2]
-    print(f"  弱项技能: {', '.join(弱项)}")
+def main() -> int:
+    failures: list[str] = []
+    for scenario in SCENARIOS:
+        print("\n" + "=" * 68)
+        print(scenario["名称"])
+        print("=" * 68)
+        result = run(
+            scenario["岗位"],
+            scenario["答题记录"],
+            scenario["主题"],
+        )
+        _print_result(result)
+        if result["流程状态"] != "通过" or not result["审核通过"]:
+            failures.append(scenario["名称"])
 
-    print(f"知识: {len(result['知识列表'])} 条")
-
-    print(f"培训: [{result['培训内容']['类型']}] {result['培训内容']['标题']}")
-
-    status = "✅ 通过" if result["审核通过"] else "❌ 未通过"
-    print(f"审核: {status} | 幻觉分数={result['幻觉分数']} | 重试={result['重试次数']}")
-
-    print(f"评估: 综合分={result['评估结果']['综合分']} "
-          f"(事实性={result['评估结果']['事实性']}, "
-          f"专业性={result['评估结果']['专业性']}, "
-          f"可读性={result['评估结果']['可读性']}, "
-          f"匹配度={result['评估结果']['匹配度']})")
+    print("\n" + "=" * 68)
+    if failures:
+        print("❌ 全链路验收失败：" + "、".join(failures))
+        return 1
+    print("✅ 三个演示场景均通过；完整自动化结果请以 pytest 为准。")
+    return 0
 
 
 if __name__ == "__main__":
-    test_all_scenarios()
+    raise SystemExit(main())

@@ -1,108 +1,119 @@
-"""
-知识检索 Agent (P2)
-从制造业知识库检索相关知识，返回带来源标注的知识列表。
+"""知识检索 Agent：中文字符向量 + ChromaDB，可溯源且不做无关兜底。"""
 
-接口契约（来自 docs/接口约定.md）：
-    输入: question (str)
-    输出: [{"内容": str, "来源": str}, ...]  — 最相关 3 条
-"""
+from __future__ import annotations
 
-# ============================================================
-# 假知识库（stub 数据，跑通骨架用。后续替换为 ChromaDB 检索）
-# ============================================================
-_MOCK_KNOWLEDGE = [
-    {
-        "内容": "数控机床操作安全规程：开机前须检查冷却液液位、润滑油油位、气压是否正常。"
-                "加工过程中禁止打开防护门，紧急停机后需手动复位各轴后才能重新启动。"
-                "每日完工后需清理切屑、擦拭导轨并涂抹防锈油。",
-        "来源": "GB/T 18400.1-2022 数控机床安全操作规程 第3章",
-    },
-    {
-        "内容": "数控车床主轴转速计算公式：n = (1000 × Vc) / (π × D)，"
-                "其中 Vc 为切削速度(m/min)，D 为工件直径(mm)。"
-                "粗加工时切削速度一般取 80-120 m/min，精加工取 150-300 m/min，具体视工件材质而定。",
-        "来源": "机械加工工艺手册 第2章 切削参数选择",
-    },
-    {
-        "内容": "常见加工缺陷——振纹：产生原因包括刀具悬伸过长、工件装夹刚性不足、切削参数不当。"
-                "解决方案：缩短刀具悬伸量(控制在刀柄直径 4 倍以内)、检查夹具紧固状态、"
-                "适当降低切削深度和进给量、选用小主偏角的刀具。",
-        "来源": "数控加工质量控制指南 第5章 常见缺陷与对策",
-    },
-    {
-        "内容": "M 代码是数控机床辅助功能指令。常用：M03 主轴正转、M05 主轴停止、M08 切削液开、"
-                "M09 切削液关、M30 程序结束并返回开头。不同品牌机床的部分 M 代码可能不同，"
-                "编程前务必查阅对应机床的编程手册。",
-        "来源": "FANUC 0i-TC 编程手册 第12章 M 代码一览",
-    },
-    {
-        "内容": "工件坐标系设定指令 G54-G59 用于指定工件原点在机床坐标系中的位置。"
-                "对刀完成后将各轴坐标值输入对应的 G54 偏置寄存器。"
-                "使用 G54 时无需 G92，程序执行前先在 MDI 模式调用 G54 确认坐标正确。",
-        "来源": "数控车床编程基础教程 第4章 坐标系设定",
-    },
-    {
-        "内容": "切削三要素：切削速度(Vc)、进给量(f)、切削深度(ap)。"
-                "切削速度决定加工效率，进给量影响表面粗糙度，切削深度受工件和机床刚性限制。"
-                "三者需平衡选择——粗加工大切深小进给，精加工小切深大进给。",
-        "来源": "金属切削原理 第3章 切削参数",
-    },
-    {
-        "内容": "CNC 机床日常维护保养制度（日保）：1）清洁机床内外表面及导轨；"
-                "2）检查润滑油位和液压油位；3）检查冷却液浓度和液位；"
-                "4）点检刀具磨损情况；5）运行前暖机 10-15 分钟；6）填写设备点检卡。",
-        "来源": "设备维护管理规程 Q/GC 03-2021",
-    },
-]
+import json
+import os
+from pathlib import Path
+from typing import Any
+
+import chromadb
+
+from contracts import validate_knowledge_item
+from knowledge_base.build_chromadb import (
+    COLLECTION_NAME,
+    DEFAULT_DATA_PATH,
+    DEFAULT_DB_PATH,
+    build_database,
+)
+from knowledge_base.embedding import HashingEmbeddingFunction, normalize_text
 
 
-def search_knowledge(question: str) -> list[dict]:
-    """
-    检索与问题最相关的 3 条知识。
+MIN_RELEVANCE = 0.22
+TOP_K = 3
 
-    当前为 stub 版本：用简单关键词匹配从假知识库中选 3 条。
-    后续替换为 ChromaDB 向量检索。
-
-    参数:
-        question: 培训相关问题，如 "数控机床怎么安全操作"
-
-    返回:
-        [{"内容": "...", "来源": "..."}, ...]  最多 3 条
-    """
-    # ---- stub 实现：关键词匹配 ----
-    # 统计每条知识与问题的关键词重合数，取 top 3
-    keywords = set(question.lower().replace("？", "").replace("，", " ").replace("、", " ").split())
-
-    scored = []
-    for item in _MOCK_KNOWLEDGE:
-        content_lower = item["内容"].lower()
-        score = sum(1 for kw in keywords if kw in content_lower)
-        if score > 0:
-            scored.append((score, item))
-
-    # 按匹配分数降序，取前 3；若全不匹配就返回前 3 条作为兜底
-    scored.sort(key=lambda x: x[0], reverse=True)
-    top3 = [item for _, item in scored[:3]]
-
-    if not top3:
-        top3 = _MOCK_KNOWLEDGE[:3]
-
-    # 只返回契约规定的两个字段
-    return [{"内容": item["内容"], "来源": item["来源"]} for item in top3]
+_SYNONYMS = {
+    "安全操作": ["防护门", "急停", "个人防护", "开机检查"],
+    "量具": ["卡尺", "千分尺", "测量", "质量检测"],
+    "质检": ["质量检测", "量具", "尺寸测量"],
+    "加工缺陷": ["振纹", "振动", "故障排除", "碰撞"],
+    "缺陷分析": ["振纹", "振动", "故障排除"],
+    "M代码": ["M03", "M05", "M08", "M09", "M30", "CNC编程"],
+    "维护": ["周期检查", "日常点检", "设备维护"],
+}
 
 
-# ============================================================
-# 独立运行示例
-# ============================================================
+def _expand_query(question: str) -> str:
+    normalized = normalize_text(question)
+    additions: list[str] = []
+    for trigger, synonyms in _SYNONYMS.items():
+        if normalize_text(trigger) in normalized:
+            additions.extend(synonyms)
+    return question + " " + " ".join(additions)
+
+
+def _load_items(data_path: Path = DEFAULT_DATA_PATH) -> dict[str, dict[str, Any]]:
+    raw = json.loads(data_path.read_text(encoding="utf-8"))
+    items: dict[str, dict[str, Any]] = {}
+    for item in raw:
+        validate_knowledge_item(item)
+        if item.get("验证状态") == "已验证":
+            items[item["知识ID"]] = item
+    return items
+
+
+def _get_collection(db_path: Path = DEFAULT_DB_PATH):
+    items = _load_items()
+    client = chromadb.PersistentClient(path=str(db_path))
+    try:
+        collection = client.get_collection(
+            COLLECTION_NAME,
+            embedding_function=HashingEmbeddingFunction(),
+        )
+        if collection.count() != len(items):
+            build_database(db_path=db_path)
+            collection = client.get_collection(
+                COLLECTION_NAME,
+                embedding_function=HashingEmbeddingFunction(),
+            )
+    except Exception:
+        build_database(db_path=db_path)
+        collection = client.get_collection(
+            COLLECTION_NAME,
+            embedding_function=HashingEmbeddingFunction(),
+        )
+    return collection, items
+
+
+def search_knowledge(question: str) -> list[dict[str, Any]]:
+    """返回最多 3 条已验证知识；低相关或未知问题返回空列表。"""
+    if not isinstance(question, str) or not question.strip():
+        raise ValueError("question 必须是非空字符串")
+
+    collection, items = _get_collection(
+        Path(os.getenv("CHROMA_DB_PATH", str(DEFAULT_DB_PATH)))
+    )
+    query = _expand_query(question.strip())
+    result = collection.query(
+        query_texts=[query],
+        n_results=min(TOP_K, max(collection.count(), 1)),
+        include=["distances"],
+    )
+    ids = result.get("ids", [[]])[0]
+    distances = result.get("distances", [[]])[0]
+
+    output: list[dict[str, Any]] = []
+    for knowledge_id, distance in zip(ids, distances):
+        score = max(0.0, 1.0 - float(distance))
+        if score < MIN_RELEVANCE or knowledge_id not in items:
+            continue
+        item = items[knowledge_id]
+        output.append(
+            {
+                "知识ID": item["知识ID"],
+                "内容": item["内容"],
+                "来源": item["来源"],
+                "来源定位": item["来源定位"],
+                "主题": list(item["主题"]),
+                "验证状态": item["验证状态"],
+                "检索分数": round(score, 4),
+            }
+        )
+    return output
+
+
 if __name__ == "__main__":
-    test_questions = [
-        "数控机床怎么安全操作",
-        "主轴转速怎么算",
-        "振纹怎么解决",
-    ]
-    for q in test_questions:
-        print(f"\n问题: {q}")
-        results = search_knowledge(q)
-        for i, r in enumerate(results, 1):
-            print(f"  [{i}] {r['内容'][:60]}...")
-            print(f"      来源: {r['来源']}")
+    for test_question in ["数控机床安全操作", "M代码编程", "量具使用", "量子计算"]:
+        print(f"\n问题：{test_question}")
+        for item in search_knowledge(test_question):
+            print(f"  {item['知识ID']} {item['检索分数']:.2f} {item['内容']}")
