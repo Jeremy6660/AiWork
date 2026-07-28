@@ -1,4 +1,4 @@
-# CLAUDE.md — 智策育训项目规则手册
+# AGENTS.md — 智策育训项目规则手册
 
 > 本文件是给 AI（下次会话的自己）看的规则手册，不是变更日志。
 > 项目背景、研究方向请读 `docs/项目背景.md`；模块接口读 `docs/接口约定.md`。
@@ -29,7 +29,7 @@
 
 ```
 AiWork/
-├── CLAUDE.md              # 本文件（AI 规则手册）
+├── AGENTS.md              # 本文件（AI 规则手册）
 ├── README.md             # 人看的：怎么装、怎么跑
 ├── app.py                # Streamlit 主界面（P1 负责）
 ├── orchestrator.py        # 编排：串起 4 个 Agent（P1 负责）
@@ -41,18 +41,18 @@ AiWork/
 │   ├── profile.py         # 画像 Agent（P3）
 │   ├── generator.py       # 内容生成 Agent（P3）
 │   ├── reviewer.py        # 三层审核 Agent（P4）
-│   └── evaluator.py       # 效果评估模块（P4）
-├── knowledge_base/       # 知识库（P2 + P3 共建）
-│   ├── build_chromadb.py # 向量库建库脚本
-│   ├── embedding.py      # 中文 n-gram 哈希向量
-│   ├── create_benchmark.py # 生成机器初标评测初稿
-│   ├── evaluate_benchmark.py # 可复现评测管线
+│   └── evaluator.py       # 透明的单份内容诊断（P4）
+├── knowledge_base/        # 知识库（P2 + P3 共建）
+│   ├── build_chromadb.py  # 向量库建库脚本
+│   ├── embedding.py       # 纯 Python 中文 n-gram 向量
+│   ├── create_benchmark.py
+│   ├── evaluate_benchmark.py
 │   ├── skill_ontology.json # 岗位技能本体（P3）
-│   └── qa_test_set.json  # QA 评测集（P2）
-├── data/knowledge.json   # 已验证、可溯源的制造业知识切片
-├── contracts.py          # 公共 TypedDict 契约与轻量校验
-├── llm_client.py         # DeepSeek/Qwen/GLM 兼容调用层
-├── tests/                # 离线确定性自动化测试
+│   └── qa_test_set.json   # QA 评测集（P2）
+├── data/knowledge.json    # 已验证知识切片
+├── contracts.py            # 公共 TypedDict 契约
+├── llm_client.py           # 三家供应商兼容调用层
+├── tests/                  # 契约、检索、生成、审核与 UI 测试
 └── docs/                  # 人看的文档
     ├── 项目背景.md         # vibe coding 时贴给 AI 的全局背景
     ├── 接口约定.md         # 模块间 JSON 契约（改前必读）
@@ -63,23 +63,19 @@ AiWork/
     └── 新成员培训_环境工具搭建.md  # 新人入组环境配置指南
 ```
 
-`knowledge_base/build_kg.py` 与 `agents/simulated_learner.py` 仍是规划项，当前工作区不存在，不能描述为已完成。
-
 ## 硬规则
 
 - **运行任何 Python 前先激活 venv**：`source venv/bin/activate`（macOS）或 `venv\Scripts\activate`（Windows），否则找不到依赖。VS Code 已配好 `.vscode/settings.json` 自动激活。
 - **密钥只放 `.env`，永不写进代码、永不提交。** 代码里用 `os.getenv()` 读。
 - **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先同步 P1。
 - **先搭骨架再填肉**：新模块可先用最小 stub 验证契约；当前主链路以真实实现和测试为准。
-- **按阶段而非按 Agent 固定分人。** 每阶段 4 人并行，每项交付物必须由另一名成员复现验收，详见 `docs/阶段制分工与互验计划.md`。
 - 联网服务（Streamlit）默认无鉴权，仅本地 Demo 用，勿暴露公网。
 
 ## 深入文档
 
 | 想了解 | 读这里 |
 |---|---|
-| 当前 4 人阶段制分工、时间表和互验规则 | `docs/阶段制分工与互验计划.md` |
-| 项目背景、五大研究方向、评分维度 | `docs/项目背景.md` |
+| 项目背景、五大研究方向、评分维度、4 人分工 | `docs/项目背景.md` |
 | 每个 Agent 的输入输出 JSON 契约 | `docs/接口约定.md` |
 | 完整研究方案（含提示词技巧） | `docs/项目研究方案.md` |
 | 比赛原始要求 | `docs/比赛方案.pdf` |

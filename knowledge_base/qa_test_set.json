@@ -1,0 +1,730 @@
+[
+  {
+    "案例ID": "QA-001",
+    "问题": "关于岗前培训、操作说明，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-SAFE-001"
+    ],
+    "参考答案": "操作或安装机床前，相关人员应先熟悉设备操作说明和安全说明。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-002",
+    "问题": "关于个人防护、安全眼镜，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-SAFE-002"
+    ],
+    "参考答案": "操作机床时应使用适当的眼部和听力防护用品。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-003",
+    "问题": "关于防护窗、日常检查，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-SAFE-003"
+    ],
+    "参考答案": "机床防护窗损坏或严重划伤时应立即更换，运行期间侧窗应保持锁闭。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-004",
+    "问题": "关于防护门、安全联锁，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-SAFE-004"
+    ],
+    "参考答案": "机床运行前应确认防护门关闭且门联锁功能正常。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-005",
+    "问题": "关于主轴停止、防护门，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-SAFE-005"
+    ],
+    "参考答案": "打开机床门前应先确认主轴已经停止转动；断电后主轴可能需要更长时间才能完全停止。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-006",
+    "问题": "关于刀具检查、开机检查，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-SAFE-006"
+    ],
+    "参考答案": "运行机床前应检查零件和刀具是否损坏，异常部件应由授权人员维修或更换。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-007",
+    "问题": "关于工件装夹、找正，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-SAFE-007"
+    ],
+    "参考答案": "装夹不可靠的工件在高转速或高进给下可能被甩出，因此不得加工尺寸超限或装夹边缘化的工件。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-008",
+    "问题": "关于维护保养、急停，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-SAFE-008"
+    ],
+    "参考答案": "进入机床防护区域进行维护或清洁前，应按下急停或关闭机床电源。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Follow these guidelines",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-009",
+    "问题": "关于急停、周期检查，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-SAFE-009"
+    ],
+    "参考答案": "每月应检查每个急停按钮能否停止全部运动并触发相应急停报警。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Periodic inspection",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-010",
+    "问题": "关于门联锁、周期检查，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-SAFE-010"
+    ],
+    "参考答案": "门安全联锁检查应确认联锁钥匙无弯曲或错位、紧固件齐全，联锁机构无阻塞或偏移。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Door Safety Interlock inspection",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-011",
+    "问题": "关于日常点检、安全玻璃，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-SAFE-011"
+    ],
+    "参考答案": "机床外壳和安全玻璃应每天目视检查，确认面板齐全且没有明显损坏。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Machine Enclosure and Safety Glass inspection",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-012",
+    "问题": "关于门规则、安全联锁，应掌握哪项关键知识？",
+    "岗位": "数控机床操作工",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-SAFE-012"
+    ],
+    "参考答案": "不得绕过机床安全功能；门开启时，多项自动运动和程序运行功能会被禁止。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.4 Door Rules",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-013",
+    "问题": "关于CNC编程、主轴，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-M-001"
+    ],
+    "参考答案": "M03 指令用于启动主轴顺时针旋转。",
+    "依据来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-014",
+    "问题": "关于CNC编程、主轴，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-M-002"
+    ],
+    "参考答案": "M05 指令用于停止主轴。",
+    "依据来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-015",
+    "问题": "关于CNC编程、冷却液，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-M-003"
+    ],
+    "参考答案": "M08 指令用于开启冷却液。",
+    "依据来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-016",
+    "问题": "关于CNC编程、冷却液，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-M-004"
+    ],
+    "参考答案": "M09 指令用于关闭冷却液。",
+    "依据来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-017",
+    "问题": "关于CNC编程、程序结束，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-M-005"
+    ],
+    "参考答案": "M30 指令用于结束程序并复位。",
+    "依据来源": "Haas Desktop Mill M-Codes",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---m-codes.html",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-018",
+    "问题": "关于CNC编程、换刀，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-M-006"
+    ],
+    "参考答案": "M06 指令用于执行刀具更换。",
+    "依据来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-019",
+    "问题": "关于M97、局部子程序，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-PROG-001"
+    ],
+    "参考答案": "M97 用于调用主程序内部的局部子程序，P 后的数字指向子程序起始行号。",
+    "依据来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Local Subprogram M97",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-020",
+    "问题": "关于M99、局部子程序，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-PROG-002"
+    ],
+    "参考答案": "局部子程序以 M99 结束，使程序返回主程序的下一行继续执行。",
+    "依据来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Local Subprogram M97",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-021",
+    "问题": "关于G代码、G00，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-PROG-003"
+    ],
+    "参考答案": "G00 表示快速定位运动，不属于切削进给动作。",
+    "依据来源": "Haas Mill Operator's Manual - Safe Run Mode",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---operation.html#11.4 Safe Run Mode",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-022",
+    "问题": "关于试运行、碰撞预防，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-PROG-004"
+    ],
+    "参考答案": "安全运行模式适合在新编或修改程序后首次试运行时使用，但不能保证避免碰撞。",
+    "依据来源": "Haas Mill Operator's Manual - Safe Run Mode",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---operation.html#11.4 Safe Run Mode",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-023",
+    "问题": "关于故障排除、碰撞，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-FAULT-001"
+    ],
+    "参考答案": "错误的刀具偏置、工件偏置或主轴中装入错误刀具，都是机床碰撞的常见原因。",
+    "依据来源": "Haas Mill Operator's Manual - Safe Run Mode",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---operation.html#11.4 Safe Run Mode",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-024",
+    "问题": "关于振纹、铣削振动，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-FAULT-002"
+    ],
+    "参考答案": "铣削振动可能来自刀具、刀柄、机床、工件或夹紧系统的稳定性限制。",
+    "依据来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-025",
+    "问题": "关于振纹、刀具悬伸，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-FAULT-003"
+    ],
+    "参考答案": "刀具悬伸较大时径向切削力会引起刀具挠曲，从而增加振动风险。",
+    "依据来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#The tool",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-026",
+    "问题": "关于振纹、切削力，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-FAULT-004"
+    ],
+    "参考答案": "降低切削力可采用锋利、轻切削几何形状，并选用较小刀尖圆弧和较小平行刃带。",
+    "依据来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#The cutting edge",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-027",
+    "问题": "关于振纹、每齿进给，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-FAULT-005"
+    ],
+    "参考答案": "切屑厚度过小时切削刃可能以摩擦代替切削并产生振动，可通过提高每齿进给量进行修正。",
+    "依据来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#Cutting data and tool path programming",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-028",
+    "问题": "关于振纹、主轴轴承，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-FAULT-006"
+    ],
+    "参考答案": "主轴轴承或进给机构过度磨损会提高加工振动风险，应结合机床稳定性控制切削力方向。",
+    "依据来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#The machine tool",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-029",
+    "问题": "关于振纹、工件装夹，应掌握哪项关键知识？",
+    "岗位": "CNC编程员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-FAULT-007"
+    ],
+    "参考答案": "夹紧刚性不足时，应让夹紧位置靠近工作台，并避免朝工件支撑最弱的方向加工。",
+    "依据来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#The workpiece and its fixture",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-030",
+    "问题": "关于量具使用、游标卡尺，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "QC-MEASURE-001"
+    ],
+    "参考答案": "游标卡尺和数显卡尺可用于测量工件的内尺寸与外尺寸。",
+    "依据来源": "Mitutoyo - Calipers",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/calipers/",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-031",
+    "问题": "关于量具使用、深度尺，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "QC-MEASURE-002"
+    ],
+    "参考答案": "深度量具适用于槽、台阶和孔等特征的深度测量。",
+    "依据来源": "Mitutoyo - Depth Gages",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/depth-gages/",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-032",
+    "问题": "关于量具使用、数显卡尺，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "QC-MEASURE-003"
+    ],
+    "参考答案": "数显卡尺以数字显示滑尺实际位置，可提高读数便利性，并可用于内、外、深度和台阶尺寸测量。",
+    "依据来源": "Mitutoyo - Digimatic Calipers",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/calipers/digimatic-calipers/",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-033",
+    "问题": "关于量具使用、内径千分尺，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "QC-MEASURE-004"
+    ],
+    "参考答案": "卡尺式内径千分尺用于高精度测量内尺寸或内径。",
+    "依据来源": "Mitutoyo - Mechanical Caliper Type Inside Micrometer",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/inside-measurement/inside-micrometers/mechanical-caliper-type-inside-micrometer/",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-034",
+    "问题": "关于量具使用、尖头千分尺，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "QC-MEASURE-005"
+    ],
+    "参考答案": "尖头千分尺适合测量钻头腹板厚度、小槽和其他难以接近的尺寸。",
+    "依据来源": "Mitutoyo Product Fundamentals",
+    "来源定位": "https://www.mitutoyo.com/webfoo/wp-content/uploads/Product-Fundamentals.pdf#Fundamentals of Micrometers",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-035",
+    "问题": "关于量具使用、球面千分尺，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "QC-MEASURE-006"
+    ],
+    "参考答案": "球面测砧千分尺适合测量杆件、轴承或管壁等曲面零件的厚度。",
+    "依据来源": "Mitutoyo Product Fundamentals",
+    "来源定位": "https://www.mitutoyo.com/webfoo/wp-content/uploads/Product-Fundamentals.pdf#Fundamentals of Micrometers",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-036",
+    "问题": "关于量具使用、刀片千分尺，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "QC-MEASURE-007"
+    ],
+    "参考答案": "刀片式千分尺适合测量轴上沟槽直径或狭窄凹入特征。",
+    "依据来源": "Mitutoyo Product Fundamentals",
+    "来源定位": "https://www.mitutoyo.com/webfoo/wp-content/uploads/Product-Fundamentals.pdf#Fundamentals of Micrometers",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-037",
+    "问题": "关于量具使用、螺纹千分尺，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P1",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "QC-MEASURE-008"
+    ],
+    "参考答案": "螺纹千分尺通过可更换测砧测量螺纹中径。",
+    "依据来源": "Mitutoyo Product Fundamentals",
+    "来源定位": "https://www.mitutoyo.com/webfoo/wp-content/uploads/Product-Fundamentals.pdf#Fundamentals of Micrometers",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-038",
+    "问题": "关于量具使用、量块，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P2",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "QC-MEASURE-009"
+    ],
+    "参考答案": "量块可用于校准测量仪器、设置机床以及验证零件尺寸。",
+    "依据来源": "Mitutoyo Small Tools & Data Management Catalog",
+    "来源定位": "https://measure.mitutoyo.com/catalog-small-tools/#Gage Blocks",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-039",
+    "问题": "关于质量记录、SPC，应掌握哪项关键知识？",
+    "岗位": "质检员",
+    "画像组": "P3",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "QC-MEASURE-010"
+    ],
+    "参考答案": "将测量数据直接传入统计过程控制软件，可以减少人工录入错误并提高数据处理效率。",
+    "依据来源": "Mitutoyo Small Tools and Data Management",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/#Seamless Data Transfer",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-040",
+    "问题": "请为转岗学习者解释数控机床安全操作、岗前培训的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P2",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-SAFE-001"
+    ],
+    "参考答案": "操作或安装机床前，相关人员应先熟悉设备操作说明和安全说明。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-041",
+    "问题": "请为转岗学习者解释数控机床安全操作、个人防护的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P3",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-SAFE-002"
+    ],
+    "参考答案": "操作机床时应使用适当的眼部和听力防护用品。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-042",
+    "问题": "请为转岗学习者解释数控机床安全操作、防护窗的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P1",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-SAFE-003"
+    ],
+    "参考答案": "机床防护窗损坏或严重划伤时应立即更换，运行期间侧窗应保持锁闭。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-043",
+    "问题": "请为转岗学习者解释数控机床安全操作、防护门的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P2",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-SAFE-004"
+    ],
+    "参考答案": "机床运行前应确认防护门关闭且门联锁功能正常。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-044",
+    "问题": "请为转岗学习者解释数控机床安全操作、主轴停止的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P3",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-SAFE-005"
+    ],
+    "参考答案": "打开机床门前应先确认主轴已经停止转动；断电后主轴可能需要更长时间才能完全停止。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-045",
+    "问题": "请为转岗学习者解释数控机床安全操作、刀具检查的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P1",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-SAFE-006"
+    ],
+    "参考答案": "运行机床前应检查零件和刀具是否损坏，异常部件应由授权人员维修或更换。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-046",
+    "问题": "请为转岗学习者解释数控机床安全操作、工件装夹的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P2",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-SAFE-007"
+    ],
+    "参考答案": "装夹不可靠的工件在高转速或高进给下可能被甩出，因此不得加工尺寸超限或装夹边缘化的工件。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-047",
+    "问题": "请为转岗学习者解释数控机床安全操作、维护保养的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P3",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-SAFE-008"
+    ],
+    "参考答案": "进入机床防护区域进行维护或清洁前，应按下急停或关闭机床电源。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Follow these guidelines",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-048",
+    "问题": "请为转岗学习者解释数控机床安全操作、急停的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P1",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-SAFE-009"
+    ],
+    "参考答案": "每月应检查每个急停按钮能否停止全部运动并触发相应急停报警。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Periodic inspection",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-049",
+    "问题": "请为转岗学习者解释数控机床安全操作、门联锁的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P2",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-SAFE-010"
+    ],
+    "参考答案": "门安全联锁检查应确认联锁钥匙无弯曲或错位、紧固件齐全，联锁机构无阻塞或偏移。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Door Safety Interlock inspection",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-050",
+    "问题": "请为转岗学习者解释数控机床安全操作、日常点检的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P3",
+    "目标难度": "入门",
+    "预期知识ID": [
+      "CNC-SAFE-011"
+    ],
+    "参考答案": "机床外壳和安全玻璃应每天目视检查，确认面板齐全且没有明显损坏。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Machine Enclosure and Safety Glass inspection",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-051",
+    "问题": "请为转岗学习者解释数控机床安全操作、门规则的关键要求。",
+    "岗位": "数控机床操作工",
+    "画像组": "P1",
+    "目标难度": "应用",
+    "预期知识ID": [
+      "CNC-SAFE-012"
+    ],
+    "参考答案": "不得绕过机床安全功能；门开启时，多项自动运动和程序运行功能会被禁止。",
+    "依据来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.4 Door Rules",
+    "标注状态": "机器初标，待人工双人复核"
+  },
+  {
+    "案例ID": "QA-052",
+    "问题": "请为转岗学习者解释M代码、CNC编程的关键要求。",
+    "岗位": "CNC编程员",
+    "画像组": "P2",
+    "目标难度": "进阶",
+    "预期知识ID": [
+      "CNC-M-001"
+    ],
+    "参考答案": "M03 指令用于启动主轴顺时针旋转。",
+    "依据来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "标注状态": "机器初标，待人工双人复核"
+  }
+]

@@ -1,0 +1,353 @@
+[
+  {
+    "知识ID": "CNC-SAFE-001",
+    "内容": "操作或安装机床前，相关人员应先熟悉设备操作说明和安全说明。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "主题": ["数控机床安全操作", "岗前培训", "操作说明"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-002",
+    "内容": "操作机床时应使用适当的眼部和听力防护用品。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "主题": ["数控机床安全操作", "个人防护", "安全眼镜", "听力防护"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-003",
+    "内容": "机床防护窗损坏或严重划伤时应立即更换，运行期间侧窗应保持锁闭。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.2 Read Before Operating",
+    "主题": ["数控机床安全操作", "防护窗", "日常检查"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-004",
+    "内容": "机床运行前应确认防护门关闭且门联锁功能正常。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "主题": ["数控机床安全操作", "防护门", "安全联锁"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-005",
+    "内容": "打开机床门前应先确认主轴已经停止转动；断电后主轴可能需要更长时间才能完全停止。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "主题": ["数控机床安全操作", "主轴停止", "防护门"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-006",
+    "内容": "运行机床前应检查零件和刀具是否损坏，异常部件应由授权人员维修或更换。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "主题": ["数控机床安全操作", "刀具检查", "开机检查"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-007",
+    "内容": "装夹不可靠的工件在高转速或高进给下可能被甩出，因此不得加工尺寸超限或装夹边缘化的工件。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Operation Safety",
+    "主题": ["数控机床安全操作", "工件装夹", "找正", "高转速"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-008",
+    "内容": "进入机床防护区域进行维护或清洁前，应按下急停或关闭机床电源。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Follow these guidelines",
+    "主题": ["数控机床安全操作", "维护保养", "急停", "清洁"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-009",
+    "内容": "每月应检查每个急停按钮能否停止全部运动并触发相应急停报警。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Periodic inspection",
+    "主题": ["数控机床安全操作", "急停", "周期检查", "维护保养"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-010",
+    "内容": "门安全联锁检查应确认联锁钥匙无弯曲或错位、紧固件齐全，联锁机构无阻塞或偏移。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Door Safety Interlock inspection",
+    "主题": ["数控机床安全操作", "门联锁", "周期检查"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-011",
+    "内容": "机床外壳和安全玻璃应每天目视检查，确认面板齐全且没有明显损坏。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#Machine Enclosure and Safety Glass inspection",
+    "主题": ["数控机床安全操作", "日常点检", "安全玻璃"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-SAFE-012",
+    "内容": "不得绕过机床安全功能；门开启时，多项自动运动和程序运行功能会被禁止。",
+    "来源": "Haas Desktop Mill Operator's Manual Supplement",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---safety.html#3.4 Door Rules",
+    "主题": ["数控机床安全操作", "门规则", "安全联锁"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-M-001",
+    "内容": "M03 指令用于启动主轴顺时针旋转。",
+    "来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "主题": ["M代码", "CNC编程", "主轴", "M03"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-M-002",
+    "内容": "M05 指令用于停止主轴。",
+    "来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "主题": ["M代码", "CNC编程", "主轴", "M05"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-M-003",
+    "内容": "M08 指令用于开启冷却液。",
+    "来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "主题": ["M代码", "CNC编程", "冷却液", "M08"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-M-004",
+    "内容": "M09 指令用于关闭冷却液。",
+    "来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "主题": ["M代码", "CNC编程", "冷却液", "M09"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-M-005",
+    "内容": "M30 指令用于结束程序并复位。",
+    "来源": "Haas Desktop Mill M-Codes",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/desktop-mill---operator-s-manual-supplement/desktop-mill---m-codes.html",
+    "主题": ["M代码", "CNC编程", "程序结束", "M30"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-M-006",
+    "内容": "M06 指令用于执行刀具更换。",
+    "来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Programming example",
+    "主题": ["M代码", "CNC编程", "换刀", "M06"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-PROG-001",
+    "内容": "M97 用于调用主程序内部的局部子程序，P 后的数字指向子程序起始行号。",
+    "来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Local Subprogram M97",
+    "主题": ["CNC编程", "M97", "局部子程序"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-PROG-002",
+    "内容": "局部子程序以 M99 结束，使程序返回主程序的下一行继续执行。",
+    "来源": "Haas Mill Operator's Manual - Programming",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---basic-programming.html#Local Subprogram M97",
+    "主题": ["CNC编程", "M99", "局部子程序"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-PROG-003",
+    "内容": "G00 表示快速定位运动，不属于切削进给动作。",
+    "来源": "Haas Mill Operator's Manual - Safe Run Mode",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---operation.html#11.4 Safe Run Mode",
+    "主题": ["CNC编程", "G代码", "G00", "快速定位"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-PROG-004",
+    "内容": "安全运行模式适合在新编或修改程序后首次试运行时使用，但不能保证避免碰撞。",
+    "来源": "Haas Mill Operator's Manual - Safe Run Mode",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---operation.html#11.4 Safe Run Mode",
+    "主题": ["CNC编程", "试运行", "碰撞预防", "Safe Run"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-FAULT-001",
+    "内容": "错误的刀具偏置、工件偏置或主轴中装入错误刀具，都是机床碰撞的常见原因。",
+    "来源": "Haas Mill Operator's Manual - Safe Run Mode",
+    "来源定位": "https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---operation.html#11.4 Safe Run Mode",
+    "主题": ["加工缺陷", "故障排除", "碰撞", "刀具偏置", "工件偏置"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-FAULT-002",
+    "内容": "铣削振动可能来自刀具、刀柄、机床、工件或夹紧系统的稳定性限制。",
+    "来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration",
+    "主题": ["加工缺陷", "振纹", "铣削振动", "故障排除"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-FAULT-003",
+    "内容": "刀具悬伸较大时径向切削力会引起刀具挠曲，从而增加振动风险。",
+    "来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#The tool",
+    "主题": ["加工缺陷", "振纹", "刀具悬伸", "铣削振动"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-FAULT-004",
+    "内容": "降低切削力可采用锋利、轻切削几何形状，并选用较小刀尖圆弧和较小平行刃带。",
+    "来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#The cutting edge",
+    "主题": ["加工缺陷", "振纹", "切削力", "刀具几何"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-FAULT-005",
+    "内容": "切屑厚度过小时切削刃可能以摩擦代替切削并产生振动，可通过提高每齿进给量进行修正。",
+    "来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#Cutting data and tool path programming",
+    "主题": ["加工缺陷", "振纹", "每齿进给", "切削参数"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-FAULT-006",
+    "内容": "主轴轴承或进给机构过度磨损会提高加工振动风险，应结合机床稳定性控制切削力方向。",
+    "来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#The machine tool",
+    "主题": ["加工缺陷", "振纹", "主轴轴承", "设备维护"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "CNC-FAULT-007",
+    "内容": "夹紧刚性不足时，应让夹紧位置靠近工作台，并避免朝工件支撑最弱的方向加工。",
+    "来源": "Sandvik Coromant - How to reduce vibration in milling",
+    "来源定位": "https://www.sandvik.coromant.com/fr-fr/knowledge/milling/vibration#The workpiece and its fixture",
+    "主题": ["加工缺陷", "振纹", "工件装夹", "夹紧刚性"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-001",
+    "内容": "游标卡尺和数显卡尺可用于测量工件的内尺寸与外尺寸。",
+    "来源": "Mitutoyo - Calipers",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/calipers/",
+    "主题": ["质量检测", "量具使用", "游标卡尺", "内外尺寸"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-002",
+    "内容": "深度量具适用于槽、台阶和孔等特征的深度测量。",
+    "来源": "Mitutoyo - Depth Gages",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/depth-gages/",
+    "主题": ["质量检测", "量具使用", "深度尺", "槽深", "孔深"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-003",
+    "内容": "数显卡尺以数字显示滑尺实际位置，可提高读数便利性，并可用于内、外、深度和台阶尺寸测量。",
+    "来源": "Mitutoyo - Digimatic Calipers",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/calipers/digimatic-calipers/",
+    "主题": ["质量检测", "量具使用", "数显卡尺", "读数"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-004",
+    "内容": "卡尺式内径千分尺用于高精度测量内尺寸或内径。",
+    "来源": "Mitutoyo - Mechanical Caliper Type Inside Micrometer",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/inside-measurement/inside-micrometers/mechanical-caliper-type-inside-micrometer/",
+    "主题": ["质量检测", "量具使用", "内径千分尺", "内径"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-005",
+    "内容": "尖头千分尺适合测量钻头腹板厚度、小槽和其他难以接近的尺寸。",
+    "来源": "Mitutoyo Product Fundamentals",
+    "来源定位": "https://www.mitutoyo.com/webfoo/wp-content/uploads/Product-Fundamentals.pdf#Fundamentals of Micrometers",
+    "主题": ["质量检测", "量具使用", "尖头千分尺", "小槽"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-006",
+    "内容": "球面测砧千分尺适合测量杆件、轴承或管壁等曲面零件的厚度。",
+    "来源": "Mitutoyo Product Fundamentals",
+    "来源定位": "https://www.mitutoyo.com/webfoo/wp-content/uploads/Product-Fundamentals.pdf#Fundamentals of Micrometers",
+    "主题": ["质量检测", "量具使用", "球面千分尺", "曲面厚度"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-007",
+    "内容": "刀片式千分尺适合测量轴上沟槽直径或狭窄凹入特征。",
+    "来源": "Mitutoyo Product Fundamentals",
+    "来源定位": "https://www.mitutoyo.com/webfoo/wp-content/uploads/Product-Fundamentals.pdf#Fundamentals of Micrometers",
+    "主题": ["质量检测", "量具使用", "刀片千分尺", "沟槽"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-008",
+    "内容": "螺纹千分尺通过可更换测砧测量螺纹中径。",
+    "来源": "Mitutoyo Product Fundamentals",
+    "来源定位": "https://www.mitutoyo.com/webfoo/wp-content/uploads/Product-Fundamentals.pdf#Fundamentals of Micrometers",
+    "主题": ["质量检测", "量具使用", "螺纹千分尺", "螺纹中径"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-009",
+    "内容": "量块可用于校准测量仪器、设置机床以及验证零件尺寸。",
+    "来源": "Mitutoyo Small Tools & Data Management Catalog",
+    "来源定位": "https://measure.mitutoyo.com/catalog-small-tools/#Gage Blocks",
+    "主题": ["质量检测", "量具使用", "量块", "校准", "尺寸验证"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "QC-MEASURE-010",
+    "内容": "将测量数据直接传入统计过程控制软件，可以减少人工录入错误并提高数据处理效率。",
+    "来源": "Mitutoyo Small Tools and Data Management",
+    "来源定位": "https://dev.pim.mitutoyo.com/products/small-tool-instruments-and-data-management/#Seamless Data Transfer",
+    "主题": ["质量检测", "质量记录", "SPC", "数据追溯"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-18"
+  }
+]
