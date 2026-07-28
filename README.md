@@ -11,6 +11,7 @@
 - 已有 39 条带来源定位的“已验证”制造业知识。
 - 已实现三个岗位画像、严格拒答、三类培训资源、L1/L2 审核、重生成闭环和 Streamlit 可视化。
 - 已有 52 条 QA 机器初标案例，但尚未完成双人复核，不能作为正式指标。
+- 已准备双人复核规范、标准库 CSV 导出器和 12 条空白试标表；真实 A/B 标注、分歧仲裁和 P2 验收仍待人工完成。
 - DeepSeek、Qwen、GLM 已有适配代码；真实生成和异构投票仍取决于本机 Key 与实际 smoke test。
 
 当前开工入口：`docs/当前状态与下一步执行方案.md`。
@@ -61,7 +62,14 @@ streamlit run app.py
 
 # 仅验证评测管线；输出不是正式指标
 python knowledge_base/evaluate_benchmark.py --include-draft
+
+# 人工复核材料的结构与空白栏校验
+python -m pytest -q tests/test_review_export.py
 ```
+
+12 条试标的固定案例、导出命令和人工填写规则见
+`docs/评测集人工复核规范.md`。空白表位于
+`data/review/qa_pilot_12_review.csv`；脚本不会代填结论或修改评测集状态。
 
 ## 环境变量
 
@@ -91,6 +99,8 @@ python knowledge_base/evaluate_benchmark.py --include-draft
 - `docs/项目背景.md` — 项目定位、边界和评分维度
 - `docs/项目研究方案.md` — 完整研究方案
 - `docs/新成员培训_环境工具搭建.md` — Windows 环境、Git、VS Code 和 API 配置
+- `docs/评测集人工复核规范.md` — 双人独立复核、来源核对、分歧仲裁与 12 条试标
+- `docs/验收记录_P1_人工复核流程.md` — P1 自检证据与交给 P2 的独立验收清单
 
 ## 可信度边界
 

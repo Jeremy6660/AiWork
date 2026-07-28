@@ -47,9 +47,12 @@ AiWork/
 │   ├── embedding.py       # 纯 Python 中文 n-gram 向量
 │   ├── create_benchmark.py
 │   ├── evaluate_benchmark.py
+│   ├── export_review_csv.py # 校验并导出空白双人复核 CSV
 │   ├── skill_ontology.json # 岗位技能本体
 │   └── qa_test_set.json   # QA 评测集
-├── data/knowledge.json    # 已验证知识切片
+├── data/
+│   ├── knowledge.json     # 已验证知识切片
+│   └── review/            # 空白试标表；人工结论不得由 AI 代填
 ├── contracts.py            # 公共 TypedDict 契约
 ├── llm_client.py           # 三家供应商兼容调用层
 ├── tests/                  # 契约、检索、生成、审核与 UI 测试
@@ -62,12 +65,13 @@ AiWork/
     ├── 分工_P2_数据与检索.md # P2 逐阶段任务书
     ├── 分工_P3_画像与生成.md # P3 逐阶段任务书
     ├── 分工_P4_审核与评估.md # P4 逐阶段任务书
-    └── 新成员培训_环境工具搭建.md  # 新人入组环境配置指南
+    ├── 新成员培训_环境工具搭建.md  # 新人入组环境配置指南
+    └── 评测集人工复核规范.md # 双人复核、来源核对与仲裁规则
 ```
 
 ## 硬规则
 
-- **运行任何 Python 前先激活 venv**：`source venv/bin/activate`（macOS）或 `venv\Scripts\activate`（Windows），否则找不到依赖。VS Code 已配好 `.vscode/settings.json` 自动激活。
+- **运行任何 Python 前先激活 venv**：`source venv/bin/activate`（macOS）、`.\venv\Scripts\Activate.ps1`（Windows PowerShell）或 `venv\Scripts\activate.bat`（Windows CMD），否则找不到依赖。VS Code 已配好 `.vscode/settings.json` 自动激活。
 - **密钥只放 `.env`，永不写进代码、永不提交。** 代码里用 `os.getenv()` 读。
 - **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先由当阶段值班集成人和下游成员确认。
 - **先搭骨架再填肉**：新模块可先用最小 stub 验证契约；当前主链路以真实实现和测试为准。
@@ -90,3 +94,5 @@ AiWork/
 | P3 当前任务与原阶段职责 | `docs/分工_P3_画像与生成.md` |
 | P4 当前任务与原阶段职责 | `docs/分工_P4_审核与评估.md` |
 | 新人入组：装环境、配工具、Git/VS Code/API 申请 | `docs/新成员培训_环境工具搭建.md` |
+| 人工双人复核、来源核对、分歧仲裁和试标导出 | `docs/评测集人工复核规范.md` |
+| P1 人工复核流程自检证据与 P2 验收入口 | `docs/验收记录_P1_人工复核流程.md` |
