@@ -37,18 +37,18 @@ AiWork/
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
 ├── agents/                # Agent 模块
-│   ├── retrieval.py       # 知识检索 Agent（P2）
-│   ├── profile.py         # 画像 Agent（P3）
-│   ├── generator.py       # 内容生成 Agent（P3）
-│   ├── reviewer.py        # 三层审核 Agent（P4）
-│   └── evaluator.py       # 效果评估模块（P4）
-├── knowledge_base/       # 知识库（P2 + P3 共建）
+│   ├── retrieval.py       # 知识检索 Agent
+│   ├── profile.py         # 画像 Agent
+│   ├── generator.py       # 内容生成 Agent
+│   ├── reviewer.py        # 三层审核 Agent
+│   └── evaluator.py       # 效果评估模块
+├── knowledge_base/       # 知识库与评测管线
 │   ├── build_chromadb.py # 向量库建库脚本
 │   ├── embedding.py      # 中文 n-gram 哈希向量
 │   ├── create_benchmark.py # 生成机器初标评测初稿
 │   ├── evaluate_benchmark.py # 可复现评测管线
-│   ├── skill_ontology.json # 岗位技能本体（P3）
-│   └── qa_test_set.json  # QA 评测集（P2）
+│   ├── skill_ontology.json # 岗位技能本体
+│   └── qa_test_set.json  # QA 评测集
 ├── data/knowledge.json   # 已验证、可溯源的制造业知识切片
 ├── contracts.py          # 公共 TypedDict 契约与轻量校验
 ├── llm_client.py         # DeepSeek/Qwen/GLM 兼容调用层
@@ -56,6 +56,8 @@ AiWork/
 └── docs/                  # 人看的文档
     ├── 项目背景.md         # vibe coding 时贴给 AI 的全局背景
     ├── 接口约定.md         # 模块间 JSON 契约（改前必读）
+    ├── 当前状态与下一步执行方案.md # 当前开工入口和提示词
+    ├── 阶段制分工与互验计划.md # 宏观阶段、轮换和互验
     ├── 分工_P1_编排与集成.md # 成员 P1 的 S0–S6 任务书
     ├── 分工_P2_数据与检索.md # 成员 P2 的 S0–S6 任务书
     ├── 分工_P3_画像与生成.md # 成员 P3 的 S0–S6 任务书
@@ -72,6 +74,7 @@ AiWork/
 - **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先由当阶段值班集成人和下游成员确认。
 - **先搭骨架再填肉**：新模块可先用最小 stub 验证契约；当前主链路以真实实现和测试为准。
 - **按阶段而非按 Agent 固定分人。** 每阶段 4 人并行，每项交付物必须由另一名成员复现验收，详见 `docs/阶段制分工与互验计划.md`。
+- **不要重做已完成阶段。** 当前先读 `docs/当前状态与下一步执行方案.md`，S0–S3 已完成最小实现。
 - 联网服务（Streamlit）默认无鉴权，仅本地 Demo 用，勿暴露公网。
 
 ## 深入文档
@@ -79,6 +82,7 @@ AiWork/
 | 想了解 | 读这里 |
 |---|---|
 | 当前 4 人阶段制分工、时间表和互验规则 | `docs/阶段制分工与互验计划.md` |
+| 当前状态、下一步执行方案和四人提示词 | `docs/当前状态与下一步执行方案.md` |
 | 项目背景、五大研究方向、评分维度 | `docs/项目背景.md` |
 | 每个 Agent 的输入输出 JSON 契约 | `docs/接口约定.md` |
 | 完整研究方案（含提示词技巧） | `docs/项目研究方案.md` |

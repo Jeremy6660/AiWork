@@ -31,24 +31,24 @@
 AiWork/
 ├── AGENTS.md              # 本文件（AI 规则手册）
 ├── README.md             # 人看的：怎么装、怎么跑
-├── app.py                # Streamlit 主界面（P1 负责）
-├── orchestrator.py        # 编排：串起 4 个 Agent（P1 负责）
+├── app.py                # Streamlit 主界面
+├── orchestrator.py        # 编排：串起 4 个 Agent
 ├── test_run.py            # 命令行全链路测试（不用装 streamlit 也能跑）
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
 ├── agents/                # Agent 模块
-│   ├── retrieval.py       # 知识检索 Agent（P2）
-│   ├── profile.py         # 画像 Agent（P3）
-│   ├── generator.py       # 内容生成 Agent（P3）
-│   ├── reviewer.py        # 三层审核 Agent（P4）
-│   └── evaluator.py       # 透明的单份内容诊断（P4）
-├── knowledge_base/        # 知识库（P2 + P3 共建）
+│   ├── retrieval.py       # 知识检索 Agent
+│   ├── profile.py         # 画像 Agent
+│   ├── generator.py       # 内容生成 Agent
+│   ├── reviewer.py        # 三层审核 Agent
+│   └── evaluator.py       # 透明的单份内容诊断
+├── knowledge_base/        # 知识库与评测管线
 │   ├── build_chromadb.py  # 向量库建库脚本
 │   ├── embedding.py       # 纯 Python 中文 n-gram 向量
 │   ├── create_benchmark.py
 │   ├── evaluate_benchmark.py
-│   ├── skill_ontology.json # 岗位技能本体（P3）
-│   └── qa_test_set.json   # QA 评测集（P2）
+│   ├── skill_ontology.json # 岗位技能本体
+│   └── qa_test_set.json   # QA 评测集
 ├── data/knowledge.json    # 已验证知识切片
 ├── contracts.py            # 公共 TypedDict 契约
 ├── llm_client.py           # 三家供应商兼容调用层
@@ -56,10 +56,12 @@ AiWork/
 └── docs/                  # 人看的文档
     ├── 项目背景.md         # vibe coding 时贴给 AI 的全局背景
     ├── 接口约定.md         # 模块间 JSON 契约（改前必读）
-    ├── 分工_P1_编排与集成.md
-    ├── 分工_P2_数据与检索.md
-    ├── 分工_P3_画像与生成.md
-    ├── 分工_P4_审核与评估.md
+    ├── 当前状态与下一步执行方案.md # 当前开工入口和提示词
+    ├── 阶段制分工与互验计划.md # 宏观阶段、轮换和互验
+    ├── 分工_P1_编排与集成.md # P1 逐阶段任务书
+    ├── 分工_P2_数据与检索.md # P2 逐阶段任务书
+    ├── 分工_P3_画像与生成.md # P3 逐阶段任务书
+    ├── 分工_P4_审核与评估.md # P4 逐阶段任务书
     └── 新成员培训_环境工具搭建.md  # 新人入组环境配置指南
 ```
 
@@ -67,21 +69,24 @@ AiWork/
 
 - **运行任何 Python 前先激活 venv**：`source venv/bin/activate`（macOS）或 `venv\Scripts\activate`（Windows），否则找不到依赖。VS Code 已配好 `.vscode/settings.json` 自动激活。
 - **密钥只放 `.env`，永不写进代码、永不提交。** 代码里用 `os.getenv()` 读。
-- **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先同步 P1。
+- **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先由当阶段值班集成人和下游成员确认。
 - **先搭骨架再填肉**：新模块可先用最小 stub 验证契约；当前主链路以真实实现和测试为准。
+- **按阶段而非按 Agent 固定分人。** 当前不要重做 S0–S3，先读 `docs/当前状态与下一步执行方案.md`。
 - 联网服务（Streamlit）默认无鉴权，仅本地 Demo 用，勿暴露公网。
 
 ## 深入文档
 
 | 想了解 | 读这里 |
 |---|---|
-| 项目背景、五大研究方向、评分维度、4 人分工 | `docs/项目背景.md` |
+| 当前状态、下一步执行方案和四人提示词 | `docs/当前状态与下一步执行方案.md` |
+| 阶段制分工、轮换与互验规则 | `docs/阶段制分工与互验计划.md` |
+| 项目背景、五大研究方向、评分维度 | `docs/项目背景.md` |
 | 每个 Agent 的输入输出 JSON 契约 | `docs/接口约定.md` |
 | 完整研究方案（含提示词技巧） | `docs/项目研究方案.md` |
 | 比赛原始要求 | `docs/比赛方案.pdf` |
 | 怎么安装运行 | `README.md` |
-| P1 详版分工（编排 + 集成 + 界面 + 七周计划） | `docs/分工_P1_编排与集成.md` |
-| P2 详版分工（数据 + 知识库 + 检索 + 七周计划） | `docs/分工_P2_数据与检索.md` |
-| P3 详版分工（画像 + 生成 + 个性化 + 七周计划） | `docs/分工_P3_画像与生成.md` |
-| P4 详版分工（三层审核 + 评测 + 闭环 + 七周计划） | `docs/分工_P4_审核与评估.md` |
+| P1 当前任务与原阶段职责 | `docs/分工_P1_编排与集成.md` |
+| P2 当前任务与原阶段职责 | `docs/分工_P2_数据与检索.md` |
+| P3 当前任务与原阶段职责 | `docs/分工_P3_画像与生成.md` |
+| P4 当前任务与原阶段职责 | `docs/分工_P4_审核与评估.md` |
 | 新人入组：装环境、配工具、Git/VS Code/API 申请 | `docs/新成员培训_环境工具搭建.md` |
