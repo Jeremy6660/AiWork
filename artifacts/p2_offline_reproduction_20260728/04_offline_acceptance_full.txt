@@ -1,0 +1,95 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260728233103
+用户名: LAPTOP-HLCR9O82\CodexSandboxOffline
+RunAs 用户: LAPTOP-HLCR9O82\CodexSandboxOffline
+配置名称: 
+计算机: LAPTOP-HLCR9O82 (Microsoft Windows NT 10.0.26200.0)
+主机应用程序: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}
+$OutputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$evidenceDir = 'E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728'
+Start-Transcript -Path "$evidenceDir\04_offline_acceptance_full.txt" -Force
+Write-Output ('[TIMESTAMP] ' + (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'))
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+Write-Output '[COMMAND] .\venv\Scripts\Activate.ps1'
+.\venv\Scripts\Activate.ps1
+Write-Output ('[EXIT CODE] ' + $(if ($?) { 0 } else { 1 }))
+$env:PYTHON_DOTENV_DISABLED = '1'
+$env:GENERATION_MODE = 'offline'
+$env:ENABLE_LLM_REVIEW = '0'
+$env:ENABLE_L3_VOTING = '0'
+$env:ALLOW_OFFLINE_FALLBACK = '1'
+$env:PYTHONUTF8 = '1'
+$env:PYTHONIOENCODING = 'utf-8'
+Write-Output '[OFFLINE GUARD] PYTHON_DOTENV_DISABLED=1; GENERATION_MODE=offline; ENABLE_LLM_REVIEW=0; ENABLE_L3_VOTING=0; ALLOW_OFFLINE_FALLBACK=1'
+Write-Output ('[ACTIVE PYTHON] ' + (Get-Command python).Source)
+$exitCodes = @()
+Write-Output '[COMMAND 4] python knowledge_base/build_chromadb.py'
+python knowledge_base/build_chromadb.py
+$code = $LASTEXITCODE
+$exitCodes += $code
+Write-Output ('[EXIT CODE 4] ' + $code)
+Write-Output '[COMMAND 5] python -m compileall -q app.py orchestrator.py test_run.py agents knowledge_base tests'
+python -m compileall -q app.py orchestrator.py test_run.py agents knowledge_base tests
+$code = $LASTEXITCODE
+$exitCodes += $code
+Write-Output ('[EXIT CODE 5] ' + $code)
+Write-Output '[COMMAND 6] python -m pytest -q'
+python -m pytest -q
+$code = $LASTEXITCODE
+$exitCodes += $code
+Write-Output ('[EXIT CODE 6] ' + $code)
+Write-Output '[COMMAND 7] python test_run.py'
+python test_run.py
+$code = $LASTEXITCODE
+$exitCodes += $code
+Write-Output ('[EXIT CODE 7] ' + $code)
+Write-Output '[NOTICE] 非正式：包含机器初标'
+Write-Output '[COMMAND 8] python knowledge_base/evaluate_benchmark.py --include-draft'
+python knowledge_base/evaluate_benchmark.py --include-draft
+$code = $LASTEXITCODE
+$exitCodes += $code
+Write-Output ('[EXIT CODE 8] ' + $code)
+Write-Output ('[EXIT CODE SUMMARY 4-8] ' + ($exitCodes -join ','))
+$overallExit = if ($exitCodes -contains 1) { 1 } elseif (($exitCodes | Where-Object { $_ -ne 0 }).Count -gt 0) { 2 } else { 0 }
+Write-Output ('[OVERALL EXIT] ' + $overallExit)
+Stop-Transcript
+exit $overallExit
+进程 ID: 23396
+PSVersion: 5.1.26100.8875
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8875
+BuildVersion: 10.0.26100.8875
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+已启动脚本，输出文件为 E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728\04_offline_acceptance_full.txt
+[TIMESTAMP] 2026-07-28T23:31:03+08:00
+[COMMAND] .\venv\Scripts\Activate.ps1
+[EXIT CODE] 0
+[OFFLINE GUARD] PYTHON_DOTENV_DISABLED=1; GENERATION_MODE=offline; ENABLE_LLM_REVIEW=0; ENABLE_L3_VOTING=0; ALLOW_OFFLINE_FALLBACK=1
+[ACTIVE PYTHON] E:\Ai\AiWork\venv\Scripts\python.exe
+[COMMAND 4] python knowledge_base/build_chromadb.py
+
+[EXIT CODE 4] 0
+[COMMAND 5] python -m compileall -q app.py orchestrator.py test_run.py agents knowledge_base tests
+
+[EXIT CODE 5] 0
+[COMMAND 6] python -m pytest -q
+
+[EXIT CODE 6] 0
+[COMMAND 7] python test_run.py
+
+[EXIT CODE 7] 0
+[NOTICE] 非正式：包含机器初标
+[COMMAND 8] python knowledge_base/evaluate_benchmark.py --include-draft
+
+[EXIT CODE 8] 0
+[EXIT CODE SUMMARY 4-8] 0,0,0,0,0
+[OVERALL EXIT] 0
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260728233122
+**********************

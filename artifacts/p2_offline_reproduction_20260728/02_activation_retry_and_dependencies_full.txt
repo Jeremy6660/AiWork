@@ -1,0 +1,83 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260728232801
+用户名: LAPTOP-HLCR9O82\CodexSandboxOffline
+RunAs 用户: LAPTOP-HLCR9O82\CodexSandboxOffline
+配置名称: 
+计算机: LAPTOP-HLCR9O82 (Microsoft Windows NT 10.0.26200.0)
+主机应用程序: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}
+$OutputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$evidenceDir = 'E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728'
+Start-Transcript -Path "$evidenceDir\02_activation_retry_and_dependencies_full.txt" -Force
+Write-Output ('[TIMESTAMP] ' + (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'))
+Write-Output '[DIAGNOSIS] Activate.ps1 was blocked by the Windows PowerShell execution policy; venv creation itself succeeded.'
+Write-Output '[COMMAND] Get-ExecutionPolicy -List'
+Get-ExecutionPolicy -List
+Write-Output '[ENVIRONMENT FIX] Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force'
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+$stepExit = if ($?) { 0 } else { 1 }
+Write-Output ('[EXIT CODE] ' + $stepExit)
+if ($stepExit -ne 0) { Stop-Transcript; exit $stepExit }
+Write-Output '[COMMAND 2 RETRY] .\venv\Scripts\Activate.ps1'
+.\venv\Scripts\Activate.ps1
+$stepExit = if ($?) { 0 } else { 1 }
+Write-Output ('[EXIT CODE 2 RETRY] ' + $stepExit)
+if ($stepExit -ne 0) { Stop-Transcript; exit $stepExit }
+Write-Output ('[ACTIVE PYTHON] ' + (Get-Command python).Source)
+Write-Output '[COMMAND] python --version'
+python --version
+Write-Output ('[EXIT CODE] ' + $LASTEXITCODE)
+Write-Output '[COMMAND] python -m pip --version'
+python -m pip --version
+Write-Output ('[EXIT CODE] ' + $LASTEXITCODE)
+Write-Output '[COMMAND 3] python -m pip install -r requirements.txt'
+python -m pip install -r requirements.txt
+$stepExit = $LASTEXITCODE
+Write-Output ('[EXIT CODE 3] ' + $stepExit)
+if ($stepExit -ne 0) { Stop-Transcript; exit $stepExit }
+Write-Output '[COMMAND] python -m pip list --format=freeze'
+python -m pip list --format=freeze
+$stepExit = $LASTEXITCODE
+Write-Output ('[EXIT CODE] ' + $stepExit)
+Stop-Transcript
+exit $stepExit
+进程 ID: 63368
+PSVersion: 5.1.26100.8875
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8875
+BuildVersion: 10.0.26100.8875
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+已启动脚本，输出文件为 E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728\02_activation_retry_and_dependencies_full.txt
+[TIMESTAMP] 2026-07-28T23:28:01+08:00
+[DIAGNOSIS] Activate.ps1 was blocked by the Windows PowerShell execution policy; venv creation itself succeeded.
+[COMMAND] Get-ExecutionPolicy -List
+
+
+
+        Scope ExecutionPolicy
+        ----- ---------------
+MachinePolicy       Undefined
+   UserPolicy       Undefined
+      Process       Undefined
+  CurrentUser       Undefined
+ LocalMachine       Undefined
+[ENVIRONMENT FIX] Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+[EXIT CODE] 0
+[COMMAND 2 RETRY] .\venv\Scripts\Activate.ps1
+[EXIT CODE 2 RETRY] 0
+[ACTIVE PYTHON] E:\Ai\AiWork\venv\Scripts\python.exe
+[COMMAND] python --version
+[EXIT CODE] 0
+[COMMAND] python -m pip --version
+[EXIT CODE] 0
+[COMMAND 3] python -m pip install -r requirements.txt
+
+[EXIT CODE 3] 1
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260728232813
+**********************

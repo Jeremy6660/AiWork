@@ -36,6 +36,8 @@ AiWork/
 ├── test_run.py            # 命令行全链路测试（不用装 streamlit 也能跑）
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
+├── .streamlit/            # 本地 Demo 的无遥测、无邮箱配置
+├── artifacts/             # 可审计的原始命令输出与实验/验收证据
 ├── agents/                # Agent 模块
 │   ├── retrieval.py       # 知识检索 Agent
 │   ├── profile.py         # 画像 Agent
@@ -96,3 +98,5 @@ AiWork/
 | 新人入组：装环境、配工具、Git/VS Code/API 申请 | `docs/新成员培训_环境工具搭建.md` |
 | 人工双人复核、来源核对、分歧仲裁和试标导出 | `docs/评测集人工复核规范.md` |
 | P1 人工复核流程自检证据与 P2 验收入口 | `docs/验收记录_P1_人工复核流程.md` |
+| P2 干净环境复现、离线基线证据与 P3 验收入口 | `docs/验收记录_P2_干净环境复现与离线基线.md` |
+| 原始命令输出、日志命名和证据包索引 | `artifacts/README.md` |

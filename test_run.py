@@ -71,9 +71,9 @@ def main() -> int:
 
     print("\n" + "=" * 68)
     if failures:
-        print("❌ 全链路验收失败：" + "、".join(failures))
+        print("[FAIL] 全链路验收失败：" + "、".join(failures))
         return 1
-    print("✅ 三个演示场景均通过；完整自动化结果请以 pytest 为准。")
+    print("[PASS] 三个演示场景均通过；完整自动化结果请以 pytest 为准。")
     return 0
 
 
