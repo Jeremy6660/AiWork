@@ -31,49 +31,46 @@
 AiWork/
 ├── CLAUDE.md              # 本文件（AI 规则手册）
 ├── README.md             # 人看的：怎么装、怎么跑
-├── app.py                # Streamlit 主界面（P1 负责）
-├── orchestrator.py        # 编排：串起 4 个 Agent（P1 负责）
+├── app.py                # Streamlit 主界面
+├── orchestrator.py        # 编排：串起 4 个 Agent
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
 ├── agents/                # Agent 模块
-│   ├── retrieval.py       # 知识检索 Agent（P2）
-│   ├── profile.py         # 画像 Agent（P3）
-│   ├── generator.py       # 内容生成 Agent（P3）
-│   ├── reviewer.py        # 三层审核 Agent（P4）
-│   ├── evaluator.py       # 效果评估模块（P4）
-│   └── simulated_learner.py  # 仿真学员（P4，仅评测用）
-├── knowledge_base/        # 知识库（P2 + P3 共建）
+│   ├── retrieval.py       # 知识检索 Agent
+│   ├── profile.py         # 画像 Agent
+│   ├── generator.py       # 内容生成 Agent
+│   ├── reviewer.py        # 三层审核 Agent
+│   ├── evaluator.py       # 效果评估模块
+│   └── simulated_learner.py  # 仿真学员（仅评测用）
+├── knowledge_base/        # 知识库
 │   ├── build_chromadb.py  # 向量库建库脚本
 │   ├── build_kg.py        # 知识图谱构建脚本
-│   ├── skill_ontology.json # 岗位技能本体（P3）
-│   └── qa_test_set.json   # QA 评测集（P2）
-├── data/                  # 制造业原始/清洗后数据（P2）
+│   ├── skill_ontology.json # 岗位技能本体
+│   └── qa_test_set.json   # QA 评测集
+├── data/                  # 制造业原始/清洗后数据
 └── docs/                  # 人看的文档
     ├── 项目背景.md         # vibe coding 时贴给 AI 的全局背景
     ├── 接口约定.md         # 模块间 JSON 契约（改前必读）
-    ├── 分工_P1_编排与集成.md
-    ├── 分工_P2_数据与检索.md
-    ├── 分工_P3_画像与生成.md
-    └── 分工_P4_审核与评估.md
+    ├── 阶段制分工与互验计划.md # 当前唯一有效的人员分工
+    └── 分工_P1_* 至 P4_*   # 旧版模块技术参考
 ```
 
 ## 硬规则
 
 - **密钥只放 `.env`，永不写进代码、永不提交。** 代码里用 `os.getenv()` 读。
-- **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先同步 P1。
+- **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先由当阶段值班集成人和下游负责人确认。
 - **先搭骨架再填肉**：新模块先写返回假数据的 stub，让全链路能跑通，再换真实实现。
+- **按阶段而非按 Agent 固定分人。** 每阶段 4 人并行，每项交付物必须由另一名成员复现验收，详见 `docs/阶段制分工与互验计划.md`。
 - 联网服务（Streamlit）默认无鉴权，仅本地 Demo 用，勿暴露公网。
 
 ## 深入文档
 
 | 想了解 | 读这里 |
 |---|---|
-| 项目背景、五大研究方向、评分维度、4 人分工 | `docs/项目背景.md` |
+| 当前 4 人阶段制分工、时间表和互验规则 | `docs/阶段制分工与互验计划.md` |
+| 项目背景、五大研究方向、评分维度 | `docs/项目背景.md` |
 | 每个 Agent 的输入输出 JSON 契约 | `docs/接口约定.md` |
 | 完整研究方案（含提示词技巧） | `智策育训_项目研究方案.md` |
 | 比赛原始要求 | 根目录 PDF |
 | 怎么安装运行 | `README.md` |
-| P1 详版分工（编排 + 集成 + 界面 + 七周计划） | `docs/分工_P1_编排与集成.md` |
-| P2 详版分工（数据 + 知识库 + 检索 + 七周计划） | `docs/分工_P2_数据与检索.md` |
-| P3 详版分工（画像 + 生成 + 个性化 + 七周计划） | `docs/分工_P3_画像与生成.md` |
-| P4 详版分工（三层审核 + 评测 + 闭环 + 七周计划） | `docs/分工_P4_审核与评估.md` |
+| 各模块技术细节（旧版人员分工，不再照此分人） | `docs/分工_P1_*` 至 `docs/分工_P4_*` |
