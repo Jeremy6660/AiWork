@@ -41,38 +41,74 @@ def _difficulty_for_mastery(level: float) -> str:
 def _build_learning_path(
     definitions: dict[str, Any], skills: dict[str, float]
 ) -> list[dict[str, Any]]:
+    """贪心学习路径规划（第4周核心算法）。
+
+    筛选条件：先修已满足（先修技能掌握度 > 0.6）+ 自身掌握度 < 0.75。
+    排序规则：(1) 先修已满足的优先 (2) 掌握度从低到高。
+    资源难度匹配：掌握度 < 0.4 → 入门/定制讲义, 0.4-0.7 → 应用/实操指南, > 0.7 → 进阶/分阶测试题。
+    """
     path: list[dict[str, Any]] = []
-    for skill, definition in definitions.items():
+    for skill_name, definition in definitions.items():
         prerequisites = definition.get("先修", [])
-        prerequisite_ready = all(skills.get(item, 0.0) >= 0.6 for item in prerequisites)
-        if skills[skill] < 0.75:
-            if not prerequisites:
-                reason = "基础技能，当前掌握度需要提升"
-            elif prerequisite_ready:
-                reason = "先修技能已满足，可进入本技能学习"
+        prerequisite_ready = all(
+            skills.get(item, 0.0) >= 0.6 for item in prerequisites
+        )
+        current_mastery = skills[skill_name]
+
+        # 只推荐掌握度未达标的技能（< 0.75）
+        if current_mastery < 0.75:
+            # 资源难度匹配（第4周要求）
+            if current_mastery < 0.4:
+                resource_type = "定制讲义"
+                difficulty_label = "入门"
+            elif current_mastery < 0.7:
+                resource_type = "实操指南"
+                difficulty_label = "应用"
             else:
-                missing = [item for item in prerequisites if skills.get(item, 0.0) < 0.6]
-                reason = "先补足先修技能：" + "、".join(missing)
+                resource_type = "分阶测试题"
+                difficulty_label = "进阶"
+
+            # 生成推荐原因
+            if not prerequisites:
+                reason = f"基础技能（难度：{definition.get('难度', '未知')}），当前掌握度 {current_mastery:.2f}，需要提升"
+            elif prerequisite_ready:
+                reason = f"先修技能已满足，可进入本技能学习（难度：{definition.get('难度', '未知')}）"
+            else:
+                missing = [
+                    item
+                    for item in prerequisites
+                    if skills.get(item, 0.0) < 0.6
+                ]
+                reason = f"先补足先修技能（{'、'.join(missing)}），当前先修不满足"
+
             path.append(
                 {
-                    "技能": skill,
-                    "当前掌握度": round(skills[skill], 4),
+                    "技能": skill_name,
+                    "当前掌握度": round(current_mastery, 4),
+                    "难度层级": definition.get("难度", "未知"),
                     "先修技能": list(prerequisites),
                     "先修已满足": prerequisite_ready,
-                    "推荐资源类型": {
-                        "入门": "定制讲义",
-                        "应用": "实操指南",
-                        "进阶": "分阶测试题",
-                    }[_difficulty_for_mastery(skills[skill])],
+                    "推荐资源类型": resource_type,
+                    "难度匹配": difficulty_label,
+                    "知识领域": definition.get("知识领域", []),
+                    "技能描述": definition.get("描述", ""),
                     "推荐原因": reason,
+                    "优先级": len(path) + 1,
                 }
             )
+
+    # 排序：先修已满足的优先，同条件下掌握度低的优先
     path.sort(
         key=lambda item: (
-            not item["先修已满足"],
-            item["当前掌握度"],
+            not item["先修已满足"],  # False(已满足)排前面
+            item["当前掌握度"],  # 掌握度低的优先
         )
     )
+
+    # 重新分配优先级编号
+    for i, item in enumerate(path, 1):
+        item["优先级"] = i
+
     return path
 
 
@@ -121,11 +157,24 @@ def build_profile(岗位: str, 答题记录: list[dict[str, Any]] | None = None)
 
     weak_skills = sorted(skills, key=skills.get)[:2]
     weakest_level = skills[weak_skills[0]]
+
+    # 汇总知识领域覆盖情况
+    knowledge_domains: list[str] = []
+    for definition in definitions.values():
+        for domain in definition.get("知识领域", []):
+            if domain not in knowledge_domains:
+                knowledge_domains.append(domain)
+
+    # 岗位元信息
+    position_meta = ontology[岗位]
     profile = {
         "岗位": 岗位,
+        "岗位描述": position_meta.get("岗位描述", ""),
+        "典型企业": position_meta.get("典型企业", ""),
         "技能掌握度": skills,
         "目标技能": weak_skills,
         "推荐难度": _difficulty_for_mastery(weakest_level),
+        "知识领域覆盖": knowledge_domains,
         "画像依据": evidence,
         "学习路径": _build_learning_path(definitions, skills),
     }
