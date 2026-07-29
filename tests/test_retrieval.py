@@ -21,7 +21,7 @@ def test_chinese_retrieval_returns_traceable_relevant_items(question, prefix):
 
 
 def test_unknown_topic_returns_empty_instead_of_fallback():
-    assert search_knowledge("量子纠缠与超导计算") == []
+    assert search_knowledge("莎士比亚哈姆雷特戏剧鉴赏") == []
 
 
 @pytest.mark.parametrize("value", ["", "   ", None, 3])
