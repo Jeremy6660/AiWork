@@ -1,0 +1,55 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260728232838
+Username: LAPTOP-HLCR9O82\ArcYuYin
+RunAs User: LAPTOP-HLCR9O82\ArcYuYin
+Configuration Name: 
+Machine: LAPTOP-HLCR9O82 (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}
+$OutputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$evidenceDir = 'E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728'
+Start-Transcript -Path "$evidenceDir\03_dependency_install_network_retry_full.txt" -Force
+Write-Output ('[TIMESTAMP] ' + (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'))
+Write-Output '[DIAGNOSIS] Initial pip install was blocked by sandbox network restrictions (WinError 10013); retrying the same install with approved network access.'
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+Write-Output '[COMMAND] .\venv\Scripts\Activate.ps1'
+.\venv\Scripts\Activate.ps1
+$stepExit = if ($?) { 0 } else { 1 }
+Write-Output ('[EXIT CODE] ' + $stepExit)
+if ($stepExit -ne 0) { Stop-Transcript; exit $stepExit }
+Write-Output '[COMMAND 3 RETRY] python -m pip install -r requirements.txt'
+python -m pip install -r requirements.txt
+$stepExit = $LASTEXITCODE
+Write-Output ('[EXIT CODE 3 RETRY] ' + $stepExit)
+if ($stepExit -ne 0) { Stop-Transcript; exit $stepExit }
+Write-Output '[COMMAND] python -m pip list --format=freeze'
+python -m pip list --format=freeze
+$stepExit = $LASTEXITCODE
+Write-Output ('[EXIT CODE] ' + $stepExit)
+Stop-Transcript
+exit $stepExit
+Process ID: 35020
+PSVersion: 5.1.26100.8875
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8875
+BuildVersion: 10.0.26100.8875
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728\03_dependency_install_network_retry_full.txt
+[TIMESTAMP] 2026-07-28T23:28:38+08:00
+[DIAGNOSIS] Initial pip install was blocked by sandbox network restrictions (WinError 10013); retrying the same install with approved network access.
+[COMMAND] .\venv\Scripts\Activate.ps1
+[EXIT CODE] 0
+[COMMAND 3 RETRY] python -m pip install -r requirements.txt
+
+[EXIT CODE 3 RETRY] 0
+[COMMAND] python -m pip list --format=freeze
+
+[EXIT CODE] 0
+**********************
+Windows PowerShell transcript end
+End time: 20260728232950
+**********************

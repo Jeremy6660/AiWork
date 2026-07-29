@@ -1,0 +1,52 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260728233206
+用户名: LAPTOP-HLCR9O82\CodexSandboxOffline
+RunAs 用户: LAPTOP-HLCR9O82\CodexSandboxOffline
+配置名称: 
+计算机: LAPTOP-HLCR9O82 (Microsoft Windows NT 10.0.26200.0)
+主机应用程序: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}
+$OutputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$evidenceDir = 'E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728'
+Start-Transcript -Path "$evidenceDir\05_boundary_sample_full.txt" -Force
+Write-Output ('[TIMESTAMP] ' + (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'))
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+Write-Output '[COMMAND] .\venv\Scripts\Activate.ps1'
+.\venv\Scripts\Activate.ps1
+Write-Output ('[EXIT CODE] ' + $(if ($?) { 0 } else { 1 }))
+$env:PYTHON_DOTENV_DISABLED = '1'
+$env:GENERATION_MODE = 'offline'
+$env:ENABLE_LLM_REVIEW = '0'
+$env:ENABLE_L3_VOTING = '0'
+$env:ALLOW_OFFLINE_FALLBACK = '1'
+$env:PYTHONUTF8 = '1'
+$env:PYTHONIOENCODING = 'utf-8'
+Write-Output '[OFFLINE GUARD] PYTHON_DOTENV_DISABLED=1; GENERATION_MODE=offline; ENABLE_LLM_REVIEW=0; ENABLE_L3_VOTING=0; ALLOW_OFFLINE_FALLBACK=1'
+Write-Output '[BOUNDARY COMMAND] python -c "from orchestrator import run; import json; r=run(''质检员'', question=''量子纠缠与超导计算''); print(json.dumps({''流程状态'': r[''流程状态''], ''失败原因'': r[''失败原因''], ''知识命中'': len(r[''知识列表'']), ''培训内容为空'': not bool(r[''培训内容'']), ''审核通过'': r[''审核通过'']}, ensure_ascii=False, indent=2))"'
+python -c "from orchestrator import run; import json; r=run('质检员', question='量子纠缠与超导计算'); print(json.dumps({'流程状态': r['流程状态'], '失败原因': r['失败原因'], '知识命中': len(r['知识列表']), '培训内容为空': not bool(r['培训内容']), '审核通过': r['审核通过']}, ensure_ascii=False, indent=2))"
+$stepExit = $LASTEXITCODE
+Write-Output ('[EXIT CODE] ' + $stepExit)
+Stop-Transcript
+exit $stepExit
+进程 ID: 48240
+PSVersion: 5.1.26100.8875
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8875
+BuildVersion: 10.0.26100.8875
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+已启动脚本，输出文件为 E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728\05_boundary_sample_full.txt
+[TIMESTAMP] 2026-07-28T23:32:06+08:00
+[COMMAND] .\venv\Scripts\Activate.ps1
+[EXIT CODE] 0
+[OFFLINE GUARD] PYTHON_DOTENV_DISABLED=1; GENERATION_MODE=offline; ENABLE_LLM_REVIEW=0; ENABLE_L3_VOTING=0; ALLOW_OFFLINE_FALLBACK=1
+[BOUNDARY COMMAND] python -c "from orchestrator import run; import json; r=run('质检员', question='量子纠缠与超导计算'); print(json.dumps({'流程状态': r['流程状态'], '失败原因': r['失败原因'], '知识命中': len(r['知识列表']), '培训内容为空': not bool(r['培训内容']), '审核通过': r['审核通过']}, ensure_ascii=False, indent=2))"
+
+[EXIT CODE] 0
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260728233208
+**********************

@@ -31,59 +31,75 @@
 AiWork/
 ├── CLAUDE.md              # 本文件（AI 规则手册）
 ├── README.md             # 人看的：怎么装、怎么跑
-├── app.py                # Streamlit 主界面（P1 负责）
-├── orchestrator.py        # 编排：串起 4 个 Agent（P1 负责）
+├── app.py                # Streamlit 主界面（按阶段轮换负责）
+├── orchestrator.py        # 编排：串起 4 个 Agent（按阶段轮换负责）
 ├── test_run.py            # 命令行全链路测试（不用装 streamlit 也能跑）
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
+├── .streamlit/            # 本地 Demo 的无遥测、无邮箱配置
+├── artifacts/             # 可审计的原始命令输出与实验/验收证据
 ├── agents/                # Agent 模块
-│   ├── retrieval.py       # 知识检索 Agent（P2）
-│   ├── profile.py         # 画像 Agent（P3）
-│   ├── generator.py       # 内容生成 Agent（P3）
-│   ├── reviewer.py        # 三层审核 Agent（P4）
-│   └── evaluator.py       # 效果评估模块（P4）
-├── knowledge_base/       # 知识库（P2 + P3 共建）
+│   ├── retrieval.py       # 知识检索 Agent
+│   ├── profile.py         # 画像 Agent
+│   ├── generator.py       # 内容生成 Agent
+│   ├── reviewer.py        # 三层审核 Agent
+│   └── evaluator.py       # 效果评估模块
+├── knowledge_base/       # 知识库与评测管线
 │   ├── build_chromadb.py # 向量库建库脚本
 │   ├── embedding.py      # 中文 n-gram 哈希向量
 │   ├── create_benchmark.py # 生成机器初标评测初稿
 │   ├── evaluate_benchmark.py # 可复现评测管线
-│   ├── skill_ontology.json # 岗位技能本体（P3）
-│   └── qa_test_set.json  # QA 评测集（P2）
-├── data/knowledge.json   # 已验证、可溯源的制造业知识切片
+│   ├── export_review_csv.py # 校验并导出空白双人复核 CSV
+│   ├── skill_ontology.json # 岗位技能本体
+│   └── qa_test_set.json  # QA 评测集
+├── data/
+│   ├── knowledge.json    # 已验证、可溯源的制造业知识切片
+│   └── review/           # 空白试标表；人工结论不得由 AI 代填
 ├── contracts.py          # 公共 TypedDict 契约与轻量校验
 ├── llm_client.py         # DeepSeek/Qwen/GLM 兼容调用层
 ├── tests/                # 离线确定性自动化测试
 └── docs/                  # 人看的文档
     ├── 项目背景.md         # vibe coding 时贴给 AI 的全局背景
     ├── 接口约定.md         # 模块间 JSON 契约（改前必读）
-    ├── 分工_P1_编排与集成.md
-    ├── 分工_P2_数据与检索.md
-    ├── 分工_P3_画像与生成.md
-    ├── 分工_P4_审核与评估.md
-    └── 新成员培训_环境工具搭建.md  # 新人入组环境配置指南
+    ├── 当前状态与下一步执行方案.md # 当前开工入口和提示词
+    ├── 阶段制分工与互验计划.md # 宏观阶段、轮换和互验
+    ├── 分工_P1_编排与集成.md # 成员 P1 的 S0–S6 任务书
+    ├── 分工_P2_数据与检索.md # 成员 P2 的 S0–S6 任务书
+    ├── 分工_P3_画像与生成.md # 成员 P3 的 S0–S6 任务书
+    ├── 分工_P4_审核与评估.md # 成员 P4 的 S0–S6 任务书
+    ├── 新成员培训_环境工具搭建.md  # 新人入组环境配置指南
+    └── 评测集人工复核规范.md # 双人复核、来源核对与仲裁规则
 ```
 
 `knowledge_base/build_kg.py` 与 `agents/simulated_learner.py` 仍是规划项，当前工作区不存在，不能描述为已完成。
 
 ## 硬规则
 
-- **运行任何 Python 前先激活 venv**：`source venv/bin/activate`（macOS）或 `venv\Scripts\activate`（Windows），否则找不到依赖。VS Code 已配好 `.vscode/settings.json` 自动激活。
+- **运行任何 Python 前先激活 venv**：`source venv/bin/activate`（macOS）、`.\venv\Scripts\Activate.ps1`（Windows PowerShell）或 `venv\Scripts\activate.bat`（Windows CMD），否则找不到依赖。VS Code 已配好 `.vscode/settings.json` 自动激活。
 - **密钥只放 `.env`，永不写进代码、永不提交。** 代码里用 `os.getenv()` 读。
-- **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先同步 P1。
+- **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先由当阶段值班集成人和下游成员确认。
 - **先搭骨架再填肉**：新模块可先用最小 stub 验证契约；当前主链路以真实实现和测试为准。
+- **按阶段而非按 Agent 固定分人。** 每阶段 4 人并行，每项交付物必须由另一名成员复现验收，详见 `docs/阶段制分工与互验计划.md`。
+- **不要重做已完成阶段。** 当前先读 `docs/当前状态与下一步执行方案.md`，S0–S3 已完成最小实现。
 - 联网服务（Streamlit）默认无鉴权，仅本地 Demo 用，勿暴露公网。
 
 ## 深入文档
 
 | 想了解 | 读这里 |
 |---|---|
-| 项目背景、五大研究方向、评分维度、4 人分工 | `docs/项目背景.md` |
+| 当前 4 人阶段制分工、时间表和互验规则 | `docs/阶段制分工与互验计划.md` |
+| 当前状态、下一步执行方案和四人提示词 | `docs/当前状态与下一步执行方案.md` |
+| 项目背景、五大研究方向、评分维度 | `docs/项目背景.md` |
 | 每个 Agent 的输入输出 JSON 契约 | `docs/接口约定.md` |
 | 完整研究方案（含提示词技巧） | `docs/项目研究方案.md` |
 | 比赛原始要求 | `docs/比赛方案.pdf` |
 | 怎么安装运行 | `README.md` |
-| P1 详版分工（编排 + 集成 + 界面 + 七周计划） | `docs/分工_P1_编排与集成.md` |
-| P2 详版分工（数据 + 知识库 + 检索 + 七周计划） | `docs/分工_P2_数据与检索.md` |
-| P3 详版分工（画像 + 生成 + 个性化 + 七周计划） | `docs/分工_P3_画像与生成.md` |
-| P4 详版分工（三层审核 + 评测 + 闭环 + 七周计划） | `docs/分工_P4_审核与评估.md` |
+| 成员 P1 的逐阶段任务、交付和互验要求 | `docs/分工_P1_编排与集成.md` |
+| 成员 P2 的逐阶段任务、交付和互验要求 | `docs/分工_P2_数据与检索.md` |
+| 成员 P3 的逐阶段任务、交付和互验要求 | `docs/分工_P3_画像与生成.md` |
+| 成员 P4 的逐阶段任务、交付和互验要求 | `docs/分工_P4_审核与评估.md` |
 | 新人入组：装环境、配工具、Git/VS Code/API 申请 | `docs/新成员培训_环境工具搭建.md` |
+| 人工双人复核、来源核对、分歧仲裁和试标导出 | `docs/评测集人工复核规范.md` |
+| P1 人工复核流程自检证据与 P2 验收入口 | `docs/验收记录_P1_人工复核流程.md` |
+| P2 干净环境复现、离线基线证据与 P3 验收入口 | `docs/验收记录_P2_干净环境复现与离线基线.md` |
+| 原始命令输出、日志命名和证据包索引 | `artifacts/README.md` |

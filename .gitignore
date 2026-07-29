@@ -1,7 +1,9 @@
 .env
 __pycache__/
 *.pyc
+.pytest_cache/
 .venv/
 venv/
 chroma_db/
 .DS_Store
+.obsidian

@@ -1,0 +1,111 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260728232723
+用户名: LAPTOP-HLCR9O82\CodexSandboxOffline
+RunAs 用户: LAPTOP-HLCR9O82\CodexSandboxOffline
+配置名称: 
+计算机: LAPTOP-HLCR9O82 (Microsoft Windows NT 10.0.26200.0)
+主机应用程序: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}
+$OutputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$evidenceDir = 'E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728'
+New-Item -ItemType Directory -Path $evidenceDir -Force | Out-Null
+Start-Transcript -Path "$evidenceDir\01_environment_setup_full.txt" -Force
+Write-Output '[CONTEXT] P2 Windows clean-environment offline reproduction'
+Write-Output ('[TIMESTAMP] ' + (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'))
+Write-Output ('[WORKDIR] ' + (Get-Location).Path)
+Write-Output ('[OS] ' + [System.Environment]::OSVersion.VersionString)
+Write-Output ('[POWERSHELL] ' + $PSVersionTable.PSVersion.ToString())
+Write-Output '[COMMAND] git rev-parse HEAD'
+git rev-parse HEAD
+Write-Output ('[EXIT CODE] ' + $LASTEXITCODE)
+Write-Output '[COMMAND] git status --short'
+git status --short
+Write-Output ('[EXIT CODE] ' + $LASTEXITCODE)
+Write-Output '[COMMAND] (Get-Command python).Source'
+(Get-Command python).Source
+Write-Output '[COMMAND] python --version'
+python --version
+Write-Output ('[EXIT CODE] ' + $LASTEXITCODE)
+$resolvedVenv = Resolve-Path -LiteralPath 'venv'
+$expectedVenv = 'E:\Ai\AiWork\venv'
+if ($resolvedVenv.Path -ne $expectedVenv) { throw "Refusing to remove unexpected venv path: $($resolvedVenv.Path)" }
+Write-Output ('[PRECONDITION] Removing existing reproducible environment only: ' + $resolvedVenv.Path)
+Remove-Item -LiteralPath $resolvedVenv.Path -Recurse -Force
+Write-Output ('[REMOVE EXIT] existing_venv_removed=' + (-not (Test-Path -LiteralPath $expectedVenv)))
+Write-Output '[COMMAND 1] python -m venv venv'
+python -m venv venv
+$stepExit = $LASTEXITCODE
+Write-Output ('[EXIT CODE 1] ' + $stepExit)
+if ($stepExit -ne 0) { Stop-Transcript; exit $stepExit }
+Write-Output '[COMMAND 2] .\venv\Scripts\Activate.ps1'
+.\venv\Scripts\Activate.ps1
+$stepExit = if ($?) { 0 } else { 1 }
+Write-Output ('[EXIT CODE 2] ' + $stepExit)
+if ($stepExit -ne 0) { Stop-Transcript; exit $stepExit }
+Write-Output ('[ACTIVE PYTHON] ' + (Get-Command python).Source)
+Write-Output '[COMMAND] python --version'
+python --version
+Write-Output ('[EXIT CODE] ' + $LASTEXITCODE)
+Write-Output '[COMMAND 3] python -m pip install -r requirements.txt'
+python -m pip install -r requirements.txt
+$stepExit = $LASTEXITCODE
+Write-Output ('[EXIT CODE 3] ' + $stepExit)
+if ($stepExit -ne 0) { Stop-Transcript; exit $stepExit }
+Write-Output '[COMMAND] python -m pip list --format=freeze'
+python -m pip list --format=freeze
+$stepExit = $LASTEXITCODE
+Write-Output ('[EXIT CODE] ' + $stepExit)
+Stop-Transcript
+exit $stepExit
+进程 ID: 49304
+PSVersion: 5.1.26100.8875
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8875
+BuildVersion: 10.0.26100.8875
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+已启动脚本，输出文件为 E:\Ai\AiWork\artifacts\p2_offline_reproduction_20260728\01_environment_setup_full.txt
+[CONTEXT] P2 Windows clean-environment offline reproduction
+[TIMESTAMP] 2026-07-28T23:27:23+08:00
+[WORKDIR] E:\Ai\AiWork
+[OS] Microsoft Windows NT 10.0.26200.0
+[POWERSHELL] 5.1.26100.8875
+[COMMAND] git rev-parse HEAD
+
+[EXIT CODE] 0
+[COMMAND] git status --short
+
+[EXIT CODE] 0
+[COMMAND] (Get-Command python).Source
+C:\Program Files\Python313\python.exe
+[COMMAND] python --version
+
+[EXIT CODE] 0
+[PRECONDITION] Removing existing reproducible environment only: E:\Ai\AiWork\venv
+[REMOVE EXIT] existing_venv_removed=True
+[COMMAND 1] python -m venv venv
+
+[EXIT CODE 1] 0
+[COMMAND 2] .\venv\Scripts\Activate.ps1
+.\venv\Scripts\Activate.ps1 : 无法加载文件 E:\Ai\AiWork\venv\Scripts\Activate.ps1，因为在此系统上禁止运行脚本。有关详细信息，请参阅 https:/go.microsoft
+.com/fwlink/?LinkID=135170 中的 about_Execution_Policies。
+所在位置 行:34 字符: 1
++ .\venv\Scripts\Activate.ps1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) []，PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+.\venv\Scripts\Activate.ps1 : 无法加载文件 E:\Ai\AiWork\venv\Scripts\Activate.ps1，因为在此系统上禁止运行脚本。有关详细信息，请参阅 https:/go.microsof
+t.com/fwlink/?LinkID=135170 中的 about_Execution_Policies。
+所在位置 行:34 字符: 1
++ .\venv\Scripts\Activate.ps1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) []，PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+[EXIT CODE 2] 1
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260728232739
+**********************
