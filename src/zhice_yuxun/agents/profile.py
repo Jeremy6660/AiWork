@@ -6,12 +6,11 @@ import json
 from pathlib import Path
 from typing import Any
 
-from contracts import validate_profile
+from ..contracts import validate_profile
+from ..paths import KNOWLEDGE_BASE_DIR
 
 
-ONTOLOGY_PATH = (
-    Path(__file__).resolve().parents[1] / "knowledge_base" / "skill_ontology.json"
-)
+ONTOLOGY_PATH = KNOWLEDGE_BASE_DIR / "skill_ontology.json"
 LEARNING_RATE = 0.15
 
 

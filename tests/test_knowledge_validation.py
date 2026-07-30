@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from contracts import ContractError
+from src.zhice_yuxun.contracts import ContractError
 from knowledge_base.build_chromadb import load_verified_knowledge
 
 

@@ -1,6 +1,10 @@
 import pytest
 
-from agents.profile import apply_feedback, build_profile, get_stable_positions
+from src.zhice_yuxun.agents.profile import (
+    apply_feedback,
+    build_profile,
+    get_stable_positions,
+)
 
 
 def test_only_evidence_backed_positions_are_stable():

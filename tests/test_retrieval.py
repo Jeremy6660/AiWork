@@ -1,6 +1,6 @@
 import pytest
 
-from agents.retrieval import search_knowledge
+from src.zhice_yuxun.agents.retrieval import search_knowledge
 
 
 @pytest.mark.parametrize(

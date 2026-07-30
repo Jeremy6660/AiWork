@@ -17,9 +17,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from agents.generator import generate_content
-from agents.profile import build_profile
-from agents.reviewer import review_content
+from src.zhice_yuxun.agents.generator import generate_content
+from src.zhice_yuxun.agents.profile import build_profile
+from src.zhice_yuxun.agents.reviewer import review_content
 
 
 def run_benchmark(include_draft: bool = False) -> dict:

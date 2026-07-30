@@ -9,8 +9,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from contracts import validate_profile, validate_training_content
-from agents.reviewer import _deterministic_anchor
+from ..contracts import validate_profile, validate_training_content
+from .reviewer import _deterministic_anchor
 
 
 def evaluate(

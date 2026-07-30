@@ -7,9 +7,9 @@ import os
 import re
 from typing import Any
 
-from contracts import ContractError, validate_knowledge_item, validate_training_content
+from ..contracts import ContractError, validate_knowledge_item, validate_training_content
 from knowledge_base.embedding import char_ngrams, normalize_text
-from llm_client import LLMError, available_providers, call_llm_json
+from ..llm_client import LLMError, available_providers, call_llm_json
 
 
 FACT_SIGNAL = re.compile(
@@ -281,9 +281,9 @@ def review_content(培训内容: dict[str, Any], 知识列表: list[dict[str, An
 
 
 if __name__ == "__main__":
-    from agents.generator import generate_content
-    from agents.profile import build_profile
-    from agents.retrieval import search_knowledge
+    from .generator import generate_content
+    from .profile import build_profile
+    from .retrieval import search_knowledge
 
     question = "M代码编程"
     knowledge = search_knowledge(question)

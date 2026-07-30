@@ -2,10 +2,10 @@ import copy
 
 import pytest
 
-from agents.generator import KnowledgeNotCoveredError, generate_content
-from agents.profile import apply_feedback, build_profile
-from agents.retrieval import search_knowledge
-from agents.reviewer import review_content
+from src.zhice_yuxun.agents.generator import KnowledgeNotCoveredError, generate_content
+from src.zhice_yuxun.agents.profile import apply_feedback, build_profile
+from src.zhice_yuxun.agents.retrieval import search_knowledge
+from src.zhice_yuxun.agents.reviewer import review_content
 
 
 def test_empty_knowledge_refuses_generation():

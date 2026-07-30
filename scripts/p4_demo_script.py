@@ -31,13 +31,22 @@ os.environ["ENABLE_LLM_REVIEW"] = "0"
 os.environ["ENABLE_L3_VOTING"] = "0"
 os.environ["ALLOW_OFFLINE_FALLBACK"] = "1"
 
-from agents.evaluator import evaluate
-from agents.generator import generate_content
-from agents.profile import apply_feedback, build_profile, get_stable_positions
-from agents.retrieval import search_knowledge
-from agents.reviewer import review_content
+from src.zhice_yuxun.agents.evaluator import evaluate
+from src.zhice_yuxun.agents.generator import generate_content
+from src.zhice_yuxun.agents.profile import (
+    apply_feedback,
+    build_profile,
+    get_stable_positions,
+)
+from src.zhice_yuxun.agents.retrieval import search_knowledge
+from src.zhice_yuxun.agents.reviewer import review_content
 
-OUTPUT_DIR = ROOT / "artifacts" / "p4_ablation_experiments_20260730"
+OUTPUT_DIR = Path(
+    os.getenv(
+        "P4_OUTPUT_DIR",
+        str(ROOT / "artifacts" / "p4_ablation_experiments_20260730"),
+    )
+).resolve()
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── Demo timing constants (seconds) ──────────────────────────────

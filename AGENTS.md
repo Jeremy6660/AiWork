@@ -31,20 +31,29 @@
 AiWork/
 ├── AGENTS.md              # 本文件（AI 规则手册）
 ├── README.md             # 人看的：怎么装、怎么跑
-├── app.py                # Streamlit 主界面（按阶段轮换负责）
-├── orchestrator.py        # 编排：串起 4 个 Agent（按阶段轮换负责）
-├── test_run.py            # 命令行全链路测试（不用装 streamlit 也能跑）
+├── app.py                # Streamlit 兼容启动入口
+├── test_run.py           # 离线三场景兼容入口
+├── orchestrator.py       # 旧导入兼容层
+├── contracts.py          # 旧导入兼容层
+├── llm_client.py         # 旧导入兼容层
+├── src/zhice_yuxun/      # 规范运行实现
+│   ├── ui.py             # Streamlit 主界面
+│   ├── offline_demo.py   # 命令行全链路实现
+│   ├── orchestrator.py   # 编排：串起 4 个 Agent
+│   ├── contracts.py      # 公共 TypedDict 契约与轻量校验
+│   ├── llm_client.py     # DeepSeek/Qwen/GLM 兼容调用层
+│   ├── paths.py          # 从仓库根目录推导资源路径
+│   └── agents/           # 4 Agent 与效果评估模块
+│       ├── retrieval.py
+│       ├── profile.py
+│       ├── generator.py
+│       ├── reviewer.py
+│       └── evaluator.py
 ├── scripts/smoke_llm.py   # 真实模型手动门禁；默认 dry-run 零调用
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
 ├── .streamlit/            # 本地 Demo 的无遥测、无邮箱配置
 ├── artifacts/             # 可审计的原始命令输出与实验/验收证据
-├── agents/                # Agent 模块
-│   ├── retrieval.py       # 知识检索 Agent
-│   ├── profile.py         # 画像 Agent
-│   ├── generator.py       # 内容生成 Agent
-│   ├── reviewer.py        # 三层审核 Agent
-│   └── evaluator.py       # 效果评估模块
 ├── knowledge_base/       # 知识库与评测管线
 │   ├── build_chromadb.py # 向量库建库脚本
 │   ├── embedding.py      # 中文 n-gram 哈希向量
@@ -56,8 +65,6 @@ AiWork/
 ├── data/
 │   ├── knowledge.json    # 已验证知识与待人工核验草稿
 │   └── review/           # 空白试标表；人工结论不得由 AI 代填
-├── contracts.py          # 公共 TypedDict 契约与轻量校验
-├── llm_client.py         # DeepSeek/Qwen/GLM 兼容调用层
 ├── tests/                # 离线确定性自动化测试
 └── docs/                  # 人看的文档
     ├── 项目背景.md         # vibe coding 时贴给 AI 的全局背景
@@ -73,7 +80,9 @@ AiWork/
     └── 验收记录_P3_整改与零费用门禁.md # P3 当前可信结论
 ```
 
-`knowledge_base/build_kg.py` 与 `agents/simulated_learner.py` 仍是规划项，当前工作区不存在，不能描述为已完成。
+`knowledge_base/build_kg.py` 与
+`src/zhice_yuxun/agents/simulated_learner.py` 仍是规划项，当前工作区不存在，
+不能描述为已完成。
 
 ## 硬规则
 
@@ -107,4 +116,6 @@ AiWork/
 | P1 人工复核流程自检证据与 P2 验收入口 | `docs/验收记录_P1_人工复核流程.md` |
 | P2 干净环境复现、离线基线证据与 P3 验收入口 | `docs/验收记录_P2_干净环境复现与离线基线.md` |
 | P3 整改、P2 独立复验与零费用门禁结论 | `docs/验收记录_P3_整改与零费用门禁.md` |
+| E1 全链路、四人证据和阶段退出门槛结论 | `docs/验收记录_E1_全面验收.md` |
+| 源码归包、路径兼容与回归验收 | `docs/验收记录_目录整理.md` |
 | 原始命令输出、日志命名和证据包索引 | `artifacts/README.md` |

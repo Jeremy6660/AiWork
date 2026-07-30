@@ -1,6 +1,10 @@
 import pytest
 
-from contracts import ContractError, validate_knowledge_item, validate_training_content
+from src.zhice_yuxun.contracts import (
+    ContractError,
+    validate_knowledge_item,
+    validate_training_content,
+)
 
 
 def test_knowledge_contract_requires_traceable_location():

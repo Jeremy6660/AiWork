@@ -2,8 +2,12 @@ from types import SimpleNamespace
 
 import pytest
 
-import llm_client
-from llm_client import LLMError, call_llm_json, call_llm_json_with_fallback
+import src.zhice_yuxun.llm_client as llm_client
+from src.zhice_yuxun.llm_client import (
+    LLMError,
+    call_llm_json,
+    call_llm_json_with_fallback,
+)
 
 
 MESSAGES = [{"role": "user", "content": "只输出 JSON"}]

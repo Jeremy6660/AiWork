@@ -7,13 +7,13 @@ import os
 import re
 from typing import Any
 
-from contracts import (
+from ..contracts import (
     ContractError,
     validate_knowledge_item,
     validate_profile,
     validate_training_content,
 )
-from llm_client import LLMError, available_providers, call_llm_json
+from ..llm_client import LLMError, available_providers, call_llm_json
 
 
 class KnowledgeNotCoveredError(ValueError):
@@ -332,8 +332,8 @@ def generate_content(
 
 
 if __name__ == "__main__":
-    from agents.profile import build_profile
-    from agents.retrieval import search_knowledge
+    from .profile import build_profile
+    from .retrieval import search_knowledge
 
     topic = "M代码编程"
     print(

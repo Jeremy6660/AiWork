@@ -40,3 +40,9 @@
 
 `README.md` 和 `13_git_worktree_state_full.txt` 在清单生成后创建或更新，因此不把自身哈希写入自身。
 
+> 2026-07-30 全面验收注记：当前 checkout 中
+> `01_environment_setup_full.txt` 至 `05_boundary_sample_full.txt` 的 SHA-256
+> 与上表不一致，其余 7 项一致。该问题可能与 Git 换行转换有关，但在重建
+> 可跨 checkout 验证的哈希清单前，前 5 项不能标记为完整性校验通过。详见
+> `docs/验收记录_E1_全面验收.md`。
+

@@ -9,7 +9,7 @@ from typing import Any
 
 import chromadb
 
-from contracts import validate_knowledge_item
+from ..contracts import validate_knowledge_item
 from knowledge_base.build_chromadb import (
     COLLECTION_NAME,
     DEFAULT_DATA_PATH,

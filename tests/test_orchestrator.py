@@ -1,4 +1,4 @@
-from orchestrator import run
+from src.zhice_yuxun.orchestrator import run
 
 
 def test_end_to_end_scenarios_pass_without_randomness():
@@ -36,7 +36,10 @@ def test_retry_exhaustion_never_auto_passes(monkeypatch):
             "断言核查": [{"断言": "伪造断言", "状态": "无依据"}],
         }
 
-    monkeypatch.setattr("orchestrator.review_content", always_fail)
+    monkeypatch.setattr(
+        "src.zhice_yuxun.orchestrator.review_content",
+        always_fail,
+    )
     result = run("数控机床操作工", question="M代码编程")
     assert result["审核通过"] is False
     assert result["流程状态"] == "需人工复核"
@@ -78,7 +81,10 @@ def test_fixed_switch_triggers_retry_then_passes(monkeypatch):
             "断言核查": [],
         }
 
-    monkeypatch.setattr("orchestrator.review_content", fail_once_then_pass)
+    monkeypatch.setattr(
+        "src.zhice_yuxun.orchestrator.review_content",
+        fail_once_then_pass,
+    )
     result = run("数控机床操作工", question="数控机床安全操作")
     assert result["审核通过"] is True
     assert result["流程状态"] == "通过"
@@ -92,7 +98,7 @@ def test_fixed_switch_triggers_retry_then_passes(monkeypatch):
 # ── S2: 跨领域画像验收 ──
 def test_cross_domain_profiles_meet_acceptance():
     """S2 通过标准：跨领域画像掌握度在0-1，相同输入得相同结果。"""
-    from agents.profile import build_profile
+    from src.zhice_yuxun.agents.profile import build_profile
 
     # 工业互联网运维工程师 - 冷启动
     p1 = build_profile("工业互联网运维工程师")
@@ -117,10 +123,10 @@ def test_cross_domain_profiles_meet_acceptance():
 # ── S3: 审核闭环通过+驳回案例 ──
 def test_pass_and_reject_cases_available():
     """S3 通过标准：正常通过案例和故意植入错误的驳回案例都可复现。"""
-    from agents.generator import generate_content
-    from agents.profile import build_profile
-    from agents.retrieval import search_knowledge
-    from agents.reviewer import review_content
+    from src.zhice_yuxun.agents.generator import generate_content
+    from src.zhice_yuxun.agents.profile import build_profile
+    from src.zhice_yuxun.agents.retrieval import search_knowledge
+    from src.zhice_yuxun.agents.reviewer import review_content
     import copy
 
     knowledge = search_knowledge("M代码编程")
@@ -146,10 +152,10 @@ def test_pass_and_reject_cases_available():
 # ── S4: L3 模型投票逻辑 ──
 def test_l3_voting_only_triggers_on_high_risk():
     """S4 通过标准：未触发L3时不产生费用；高风险才触发。"""
-    from agents.reviewer import review_content
-    from agents.generator import generate_content
-    from agents.profile import build_profile
-    from agents.retrieval import search_knowledge
+    from src.zhice_yuxun.agents.generator import generate_content
+    from src.zhice_yuxun.agents.profile import build_profile
+    from src.zhice_yuxun.agents.retrieval import search_knowledge
+    from src.zhice_yuxun.agents.reviewer import review_content
     import copy
 
     knowledge = search_knowledge("M代码编程")
@@ -175,11 +181,11 @@ def test_l3_voting_only_triggers_on_high_risk():
 
 def test_model_vote_records_one_failure_and_two_successes(monkeypatch):
     """一家供应商失败时，真实经过 _model_vote 并保留三家结果。"""
-    import agents.reviewer as reviewer
-    from agents.generator import generate_content
-    from agents.profile import build_profile
-    from agents.retrieval import search_knowledge
-    from llm_client import LLMError
+    import src.zhice_yuxun.agents.reviewer as reviewer
+    from src.zhice_yuxun.agents.generator import generate_content
+    from src.zhice_yuxun.agents.profile import build_profile
+    from src.zhice_yuxun.agents.retrieval import search_knowledge
+    from src.zhice_yuxun.llm_client import LLMError
 
     knowledge = search_knowledge("M代码编程")
     content = generate_content(build_profile("CNC编程员"), knowledge, "M代码编程")
@@ -205,10 +211,10 @@ def test_model_vote_records_one_failure_and_two_successes(monkeypatch):
 
 def test_l3_requires_two_successful_independent_providers(monkeypatch):
     """L3 成功供应商不足两个时必须转人工复核。"""
-    import agents.reviewer as reviewer
-    from agents.generator import generate_content
-    from agents.profile import build_profile
-    from agents.retrieval import search_knowledge
+    import src.zhice_yuxun.agents.reviewer as reviewer
+    from src.zhice_yuxun.agents.generator import generate_content
+    from src.zhice_yuxun.agents.profile import build_profile
+    from src.zhice_yuxun.agents.retrieval import search_knowledge
 
     knowledge = search_knowledge("M代码编程")
     content = generate_content(build_profile("CNC编程员"), knowledge, "M代码编程")

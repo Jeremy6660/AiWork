@@ -13,9 +13,23 @@
 - 已有 52 条 QA 机器初标案例，但尚未完成双人复核，不能作为正式指标。
 - 已准备双人复核规范、标准库 CSV 导出器和 12 条空白试标表；真实 A/B 标注、分歧仲裁和 P2 对 P1 流程的独立验收仍待完成。
 - P2 的历史提交已由 P3 在独立 Windows venv 复验：建库 39 条、`pytest` 44 项通过、三个演示场景通过。
-- 当前代码离线验收为 61 项测试通过；DeepSeek、Qwen、GLM 仅完成零费用 smoke 门禁和故障模拟，真实调用仍需操作者显式确认。
+- 当前代码离线验收为 63 项测试通过；DeepSeek、Qwen、GLM 仅完成零费用 smoke 门禁和故障模拟，真实调用仍需操作者显式确认。
+- P4 的 4 项消融实验和 10 分钟演示脚本可运行，但 E1 全面验收未通过：人工双人试标和两项独立互验仍缺，且存在跨领域低分误命中、证据版本/哈希与 L3 状态表述问题。
 
-当前开工入口：`docs/当前状态与下一步执行方案.md`。
+当前开工入口：`docs/当前状态与下一步执行方案.md`；全面验收记录见
+`docs/验收记录_E1_全面验收.md`。
+
+## 代码布局
+
+- `src/zhice_yuxun/`：规范运行实现，包含编排、契约、模型客户端、界面和
+  `agents/`。
+- `knowledge_base/`：建库、评测与人工复核导出工具。
+- `scripts/`：手动 smoke、消融和演示脚本。
+- `tests/`：离线确定性测试。
+- `data/`、`artifacts/`、`docs/`：数据、原始证据和文档。
+- 根目录的 `app.py`、`test_run.py` 是稳定启动入口；
+  `orchestrator.py`、`contracts.py`、`llm_client.py` 仅保留旧导入兼容，
+  新代码应从 `src.zhice_yuxun` 导入。
 
 ## 环境要求
 
@@ -54,6 +68,9 @@ python knowledge_base/build_chromadb.py
 ```powershell
 # 离线自动化验收
 python -m pytest -q
+
+# 全仓 Python 语法编译检查
+python -m compileall -q app.py test_run.py orchestrator.py contracts.py llm_client.py src knowledge_base scripts tests
 
 # 三个代表场景；任一失败会返回非零退出码
 # 此命令强制离线，即使 .env 中配置了 Key 也不会调用模型
@@ -109,6 +126,8 @@ python -m pytest -q tests/test_review_export.py
 - `docs/验收记录_P1_人工复核流程.md` — P1 自检证据与交给 P2 的独立验收清单
 - `docs/验收记录_P2_干净环境复现与离线基线.md` — P2 环境复现、离线结果与交给 P3 的验收清单
 - `docs/验收记录_P3_整改与零费用门禁.md` — P3 整改、P2 独立复验与真实调用阻塞
+- `docs/验收记录_E1_全面验收.md` — E1 全链路、四人证据和退出门槛的实际验收结论
+- `docs/验收记录_目录整理.md` — 源码归包、路径兼容与回归验收记录
 - `artifacts/README.md` — 原始命令输出、实验和验收证据包索引
 
 ## 可信度边界
