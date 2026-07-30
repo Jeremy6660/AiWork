@@ -22,6 +22,19 @@ def load_ontology(path: Path = ONTOLOGY_PATH) -> dict[str, Any]:
     return ontology
 
 
+def get_stable_positions() -> list[str]:
+    """返回已具备稳定知识证据、允许在主界面展示的岗位。"""
+
+    ontology = load_ontology()
+    meta = ontology.get("_meta", {})
+    positions = meta.get("稳定岗位", [])
+    if not isinstance(positions, list) or not positions:
+        raise ValueError("技能本体必须在 _meta.稳定岗位 中声明稳定岗位")
+    if not all(isinstance(item, str) and item in ontology for item in positions):
+        raise ValueError("_meta.稳定岗位 包含无效岗位")
+    return list(positions)
+
+
 def get_position_skills(岗位: str) -> list[str]:
     ontology = load_ontology()
     position = ontology.get(岗位)

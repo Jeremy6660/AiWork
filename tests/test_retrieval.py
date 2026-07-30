@@ -24,6 +24,11 @@ def test_unknown_topic_returns_empty_instead_of_fallback():
     assert search_knowledge("莎士比亚哈姆雷特戏剧鉴赏") == []
 
 
+def test_unverified_experimental_topics_do_not_pollute_stable_retrieval():
+    assert search_knowledge("ONNX模型部署") == []
+    assert search_knowledge("焊接安全与劳动防护") == []
+
+
 @pytest.mark.parametrize("value", ["", "   ", None, 3])
 def test_invalid_question_is_rejected(value):
     with pytest.raises(ValueError):

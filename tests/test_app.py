@@ -20,6 +20,7 @@ def test_streamlit_app_starts_without_exception():
     assert not app.exception
     assert app.title[0].value == "智策育训"
     assert "请在左侧选择岗位" in app.info[0].value
+    assert app.selectbox[0].options == ["数控机床操作工", "CNC编程员", "质检员"]
 
 
 def test_failure_state_is_rendered_without_content():
@@ -79,3 +80,47 @@ def test_session_state_prevents_unintended_regeneration(monkeypatch):
     app.run()
     assert calls == ["", "降维解释"]
     assert not app.exception
+
+
+def test_iteration_comparison_renders_before_and_after_bodies():
+    result = orchestrator.run("CNC编程员", question="M代码编程")
+    result["迭代历史"] = [
+        {
+            "轮次": 1,
+            "内容标题": "第一版",
+            "正文": "修改前正文证据",
+            "资源类型": "定制讲义",
+            "生成模式": "离线确定性",
+            "流程状态": "失败",
+            "审核通过": False,
+            "幻觉分数": 1.0,
+            "修改建议": "删除无依据断言",
+            "断言核查": [],
+        },
+        {
+            "轮次": 2,
+            "内容标题": "第二版",
+            "正文": "修改后正文证据",
+            "资源类型": "定制讲义",
+            "生成模式": "离线确定性",
+            "流程状态": "通过",
+            "审核通过": True,
+            "幻觉分数": 0.0,
+            "修改建议": "",
+            "断言核查": [],
+        },
+    ]
+
+    app = AppTest.from_file(APP_PATH, default_timeout=10)
+    app.session_state["result"] = result
+    app.session_state["last_request"] = {
+        "position": "CNC编程员",
+        "records": [],
+        "topic": "M代码编程",
+    }
+    app.run()
+
+    markdown_values = [item.value for item in app.markdown]
+    assert any("修改前正文证据" in value for value in markdown_values)
+    assert any("修改后正文证据" in value for value in markdown_values)
+    assert any("删除无依据断言" in item.value for item in app.warning)

@@ -34,6 +34,7 @@ AiWork/
 ├── app.py                # Streamlit 主界面（按阶段轮换负责）
 ├── orchestrator.py        # 编排：串起 4 个 Agent（按阶段轮换负责）
 ├── test_run.py            # 命令行全链路测试（不用装 streamlit 也能跑）
+├── scripts/smoke_llm.py   # 真实模型手动门禁；默认 dry-run 零调用
 ├── requirements.txt
 ├── .env.example           # API key 模板（真实 key 放 .env，禁止提交）
 ├── .streamlit/            # 本地 Demo 的无遥测、无邮箱配置
@@ -53,7 +54,7 @@ AiWork/
 │   ├── skill_ontology.json # 岗位技能本体
 │   └── qa_test_set.json  # QA 评测集
 ├── data/
-│   ├── knowledge.json    # 已验证、可溯源的制造业知识切片
+│   ├── knowledge.json    # 已验证知识与待人工核验草稿
 │   └── review/           # 空白试标表；人工结论不得由 AI 代填
 ├── contracts.py          # 公共 TypedDict 契约与轻量校验
 ├── llm_client.py         # DeepSeek/Qwen/GLM 兼容调用层
@@ -68,7 +69,8 @@ AiWork/
     ├── 分工_P3_画像与生成.md # 成员 P3 的 S0–S6 任务书
     ├── 分工_P4_审核与评估.md # 成员 P4 的 S0–S6 任务书
     ├── 新成员培训_环境工具搭建.md  # 新人入组环境配置指南
-    └── 评测集人工复核规范.md # 双人复核、来源核对与仲裁规则
+    ├── 评测集人工复核规范.md # 双人复核、来源核对与仲裁规则
+    └── 验收记录_P3_整改与零费用门禁.md # P3 当前可信结论
 ```
 
 `knowledge_base/build_kg.py` 与 `agents/simulated_learner.py` 仍是规划项，当前工作区不存在，不能描述为已完成。
@@ -77,7 +79,9 @@ AiWork/
 
 - **运行任何 Python 前先激活 venv**：`source venv/bin/activate`（macOS）、`.\venv\Scripts\Activate.ps1`（Windows PowerShell）或 `venv\Scripts\activate.bat`（Windows CMD），否则找不到依赖。VS Code 已配好 `.vscode/settings.json` 自动激活。
 - **密钥只放 `.env`，永不写进代码、永不提交。** 代码里用 `os.getenv()` 读。
+- **自动验收不得调用真实模型。** `test_run.py` 必须强制离线；真实调用只能走 `scripts/smoke_llm.py --execute`，并由操作者交互确认。
 - **改任何 Agent 前，先读 `docs/接口约定.md`。** 输入输出的 JSON 结构是全组约定，不能私自改；要改先由当阶段值班集成人和下游成员确认。
+- **只宣称稳定岗位能力。** 对外范围以 `skill_ontology.json._meta.稳定岗位` 为准；实验岗位和待核验知识不得计入已验收规模。
 - **先搭骨架再填肉**：新模块可先用最小 stub 验证契约；当前主链路以真实实现和测试为准。
 - **按阶段而非按 Agent 固定分人。** 每阶段 4 人并行，每项交付物必须由另一名成员复现验收，详见 `docs/阶段制分工与互验计划.md`。
 - **不要重做已完成阶段。** 当前先读 `docs/当前状态与下一步执行方案.md`，S0–S3 已完成最小实现。
@@ -87,8 +91,8 @@ AiWork/
 
 | 想了解 | 读这里 |
 |---|---|
-| 当前 4 人阶段制分工、时间表和互验规则 | `docs/阶段制分工与互验计划.md` |
 | 当前状态、下一步执行方案和四人提示词 | `docs/当前状态与下一步执行方案.md` |
+| 当前 4 人阶段制分工、时间表和互验规则 | `docs/阶段制分工与互验计划.md` |
 | 项目背景、五大研究方向、评分维度 | `docs/项目背景.md` |
 | 每个 Agent 的输入输出 JSON 契约 | `docs/接口约定.md` |
 | 完整研究方案（含提示词技巧） | `docs/项目研究方案.md` |
@@ -102,4 +106,5 @@ AiWork/
 | 人工双人复核、来源核对、分歧仲裁和试标导出 | `docs/评测集人工复核规范.md` |
 | P1 人工复核流程自检证据与 P2 验收入口 | `docs/验收记录_P1_人工复核流程.md` |
 | P2 干净环境复现、离线基线证据与 P3 验收入口 | `docs/验收记录_P2_干净环境复现与离线基线.md` |
+| P3 整改、P2 独立复验与零费用门禁结论 | `docs/验收记录_P3_整改与零费用门禁.md` |
 | 原始命令输出、日志命名和证据包索引 | `artifacts/README.md` |

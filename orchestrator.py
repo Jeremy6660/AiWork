@@ -8,7 +8,7 @@ from typing import Any
 
 from agents.evaluator import evaluate
 from agents.generator import KnowledgeNotCoveredError, generate_content
-from agents.profile import apply_feedback, build_profile
+from agents.profile import apply_feedback, build_profile, get_stable_positions
 from agents.retrieval import search_knowledge
 from agents.reviewer import review_content
 
@@ -73,6 +73,24 @@ def run(
             "   目标技能=" + "、".join(profile["目标技能"])
             + f"，推荐难度={profile['推荐难度']}"
         )
+        if 岗位 not in get_stable_positions():
+            message = "该岗位仍处于实验阶段，尚无完成核验的知识证据"
+            log(f"⛔ {message}")
+            return {
+                "流程状态": "失败",
+                "失败原因": message,
+                "画像": profile,
+                "知识列表": [],
+                "培训内容": {},
+                "审核明细": {"规则引擎": "未执行", "风险等级": "high"},
+                "审核通过": False,
+                "幻觉分数": 1.0,
+                "评估结果": _empty_evaluation(message),
+                "重试次数": 0,
+                "学习路径": profile.get("学习路径", []),
+                "迭代历史": [],
+                "协同日志": logs,
+            }
 
         log(f"🔍 检索 Agent：检索主题“{topic}”")
         knowledge = search_knowledge(topic)
@@ -111,6 +129,7 @@ def run(
                 {
                     "轮次": round_number,
                     "内容标题": content["标题"],
+                    "正文": content["正文"],
                     "资源类型": content["类型"],
                     "生成模式": content["生成模式"],
                     "流程状态": review["流程状态"],

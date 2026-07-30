@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 
@@ -56,5 +57,26 @@ def test_current_corpus_is_traceable_and_unique():
 
     assert loaded
     assert len(ids) == len(set(ids))
+    assert len(loaded) == 39
     assert all(item["来源定位"].strip() for item in loaded)
     assert all(item["验证状态"] == "已验证" for item in loaded)
+
+
+def test_current_corpus_keeps_nine_drafts_out_of_verified_index():
+    path = Path(__file__).resolve().parents[1] / "data" / "knowledge.json"
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    drafts = [item for item in raw if item.get("验证状态") == "待人工核验"]
+
+    assert len(raw) == 48
+    assert len(drafts) == 9
+    assert {item["知识ID"] for item in drafts} == {
+        "IIOT-PROTO-001",
+        "IIOT-PROTO-002",
+        "IIOT-EDGE-001",
+        "IIOT-PLC-001",
+        "AI-DEPLOY-001",
+        "AI-ANNOTATE-001",
+        "AI-ML-OPS-001",
+        "IIOT-SECURITY-001",
+        "PYTHON-DATA-001",
+    }

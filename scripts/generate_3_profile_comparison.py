@@ -1,4 +1,4 @@
-"""第6周提交物：3组画像测试用例 + 对应生成结果对比。
+"""P3 离线证据：3组画像测试用例 + 对应生成结果对比。
 
 演示"同一培训主题 → 3 组不同画像 → 3 种不同资源类型"的个性化引擎效果。
 """
@@ -6,16 +6,28 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+# 该脚本生成离线证据，绝不因本机 .env 配置而产生真实调用。
+os.environ["GENERATION_MODE"] = "offline"
+os.environ["ENABLE_LLM_REVIEW"] = "0"
+os.environ["ENABLE_L3_VOTING"] = "0"
 
 from agents.generator import generate_content
 from agents.profile import apply_feedback, build_profile
 from agents.retrieval import search_knowledge
 
-OUTPUT = Path(__file__).resolve().parents[1] / "tests" / "3_profile_comparison.json"
+OUTPUT = (
+    Path(__file__).resolve().parents[1]
+    / "artifacts"
+    / "p3_profile_comparison_20260730"
+    / "3_profile_comparison.json"
+)
 
 
 def build_three_profiles():
@@ -99,7 +111,7 @@ def main():
     comparison = {
         "提交物说明": "3组差异化画像测试用例与对应生成结果对比——智策育训 P3 画像与生成 Agent",
         "测试主题": topic,
-        "测试日期": "2026-08-27",
+        "测试日期": date.today().isoformat(),
         "对比维度": [
             "同一培训主题（量具使用）",
             "同一岗位（质检员）",
@@ -113,6 +125,7 @@ def main():
         "对比结果": results,
     }
 
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(comparison, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\n📄 对比结果已写入: {OUTPUT}")
 

@@ -1,0 +1,6 @@
+供应商：deepseek
+模型：deepseek-v4-flash
+场景：generate
+Key 已配置：是
+预计逻辑调用次数：0
+[DRY-RUN] 未发起任何网络请求。

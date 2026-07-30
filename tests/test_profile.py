@@ -1,6 +1,10 @@
 import pytest
 
-from agents.profile import apply_feedback, build_profile
+from agents.profile import apply_feedback, build_profile, get_stable_positions
+
+
+def test_only_evidence_backed_positions_are_stable():
+    assert get_stable_positions() == ["数控机床操作工", "CNC编程员", "质检员"]
 
 
 def test_quality_inspector_profile_has_no_operator_mcode_fallback():

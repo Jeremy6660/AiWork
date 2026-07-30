@@ -21,6 +21,16 @@ from knowledge_base.embedding import HashingEmbeddingFunction, normalize_text
 
 MIN_RELEVANCE = 0.22
 TOP_K = 3
+EXPERIMENTAL_ONLY_TERMS = (
+    "工业互联网",
+    "modbus",
+    "opcua",
+    "opc-ua",
+    "边缘网关",
+    "onnx",
+    "模型部署",
+    "焊接",
+)
 
 _SYNONYMS = {
     "安全操作": ["防护门", "急停", "个人防护", "开机检查"],
@@ -79,6 +89,12 @@ def search_knowledge(question: str) -> list[dict[str, Any]]:
     """返回最多 3 条已验证知识；低相关或未知问题返回空列表。"""
     if not isinstance(question, str) or not question.strip():
         raise ValueError("question 必须是非空字符串")
+    normalized_question = normalize_text(question)
+    if any(
+        normalize_text(term) in normalized_question
+        for term in EXPERIMENTAL_ONLY_TERMS
+    ):
+        return []
 
     collection, items = _get_collection(
         Path(os.getenv("CHROMA_DB_PATH", str(DEFAULT_DB_PATH)))

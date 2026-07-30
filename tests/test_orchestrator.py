@@ -14,6 +14,7 @@ def test_end_to_end_scenarios_pass_without_randomness():
         assert result["幻觉分数"] == 0.0
         assert result["重试次数"] == 0
         assert result["迭代历史"]
+        assert all(item.get("正文") for item in result["迭代历史"])
 
 
 def test_unknown_topic_fails_safely():
@@ -41,6 +42,7 @@ def test_retry_exhaustion_never_auto_passes(monkeypatch):
     assert result["流程状态"] == "需人工复核"
     assert result["重试次数"] == 2
     assert len(result["迭代历史"]) == 3
+    assert all(item.get("正文") for item in result["迭代历史"])
     assert not any("以当前内容通过" in line for line in result["协同日志"])
 
 
@@ -171,31 +173,71 @@ def test_l3_voting_only_triggers_on_high_risk():
     assert review_bad["审核明细"]["模型投票"] == "未触发"
 
 
-def test_voting_model_fallback_on_single_failure():
-    """S4 通过标准：一家API失败仍能返回明确状态（模拟单模型故障）。"""
-    from agents.reviewer import _model_vote
-    import os
-
-    # 没有配置任何Key时，_model_vote应该无法调用
-    # 但审核系统应该降级为确定性锚定，不会崩溃
-    assert os.getenv("ENABLE_L3_VOTING", "0") == "0"
-    # 在默认配置下，审核不依赖L3即可正常运行
-    from agents.reviewer import review_content
+def test_model_vote_records_one_failure_and_two_successes(monkeypatch):
+    """一家供应商失败时，真实经过 _model_vote 并保留三家结果。"""
+    import agents.reviewer as reviewer
     from agents.generator import generate_content
     from agents.profile import build_profile
     from agents.retrieval import search_knowledge
-    import copy
+    from llm_client import LLMError
 
     knowledge = search_knowledge("M代码编程")
     content = generate_content(build_profile("CNC编程员"), knowledge, "M代码编程")
-    bad = copy.deepcopy(content)
-    bad["正文"] += "\n- 严重伪造 [FAKE-SEVERE-1]"
-    bad["引用知识ID"].append("FAKE-SEVERE-1")
+    called = []
 
-    review = review_content(bad, knowledge)
-    # 即使没有L3，确定性审核也能给出明确状态
-    assert review["流程状态"] in {"通过", "失败", "需人工复核"}
-    assert isinstance(review["幻觉分数"], (int, float))
+    def fake_call(provider, _messages):
+        called.append(provider)
+        if provider == "deepseek":
+            raise LLMError("模拟超时")
+        return {"通过": True, "理由": "有依据", "_模型": f"{provider}-mock"}
+
+    monkeypatch.setattr(
+        reviewer, "available_providers", lambda: ["deepseek", "qwen", "glm"]
+    )
+    monkeypatch.setattr(reviewer, "call_llm_json", fake_call)
+
+    votes = reviewer._model_vote(content, knowledge)
+
+    assert called == ["deepseek", "qwen", "glm"]
+    assert [vote["通过"] for vote in votes] == [None, True, True]
+    assert "模拟超时" in votes[0]["理由"]
+
+
+def test_l3_requires_two_successful_independent_providers(monkeypatch):
+    """L3 成功供应商不足两个时必须转人工复核。"""
+    import agents.reviewer as reviewer
+    from agents.generator import generate_content
+    from agents.profile import build_profile
+    from agents.retrieval import search_knowledge
+
+    knowledge = search_knowledge("M代码编程")
+    content = generate_content(build_profile("CNC编程员"), knowledge, "M代码编程")
+    monkeypatch.setenv("ENABLE_L3_VOTING", "1")
+    monkeypatch.setattr(
+        reviewer,
+        "_deterministic_anchor",
+        lambda _content, _knowledge: [
+            {"断言": "伪造1", "状态": "无依据", "依据": ""},
+            {"断言": "伪造2", "状态": "无依据", "依据": ""},
+            {"断言": "伪造3", "状态": "无依据", "依据": ""},
+        ],
+    )
+    monkeypatch.setattr(
+        reviewer,
+        "_model_vote",
+        lambda _content, _knowledge: [
+            {"模型": "deepseek", "通过": True, "理由": "mock"},
+            {"模型": "qwen", "通过": None, "理由": "timeout"},
+            {"模型": "glm", "通过": None, "理由": "invalid json"},
+        ],
+    )
+
+    review = reviewer.review_content(content, knowledge)
+
+    assert review["流程状态"] == "需人工复核"
+    assert review["通过"] is False
+    assert review["审核明细"]["模型投票"] == "1/1"
+    assert "必须人工复核" in review["修改建议"]
 
 
 # ── S5: 稳定性与异常处理 ──
@@ -225,10 +267,11 @@ def test_shared_state_contains_all_required_fields():
 
 
 def test_new_cross_domain_role_runs_end_to_end():
-    """验证新增跨领域岗位可以跑通全链路。"""
+    """实验岗位保留画像能力，但未核验知识不得进入生成链路。"""
     result = run("工业互联网运维工程师", question="工业互联网")
-    # 新岗位可能知识库尚未充分覆盖，但系统不应崩溃
-    assert result["流程状态"] in {"通过", "失败"}
+    assert result["流程状态"] == "失败"
+    assert result["知识列表"] == []
+    assert result["培训内容"] == {}
     assert "画像" in result
     assert result["画像"]["岗位"] == "工业互联网运维工程师"
     assert "知识领域覆盖" in result["画像"]

@@ -45,6 +45,21 @@ class TrainingContent(TypedDict, total=False):
     生成模式: str
 
 
+class IterationRecord(TypedDict, total=False):
+    """编排迭代摘要；正文为新增可选字段，兼容既有记录。"""
+
+    轮次: int
+    内容标题: str
+    正文: str
+    资源类型: ResourceType
+    生成模式: str
+    流程状态: FlowStatus
+    审核通过: bool
+    幻觉分数: float
+    修改建议: str
+    断言核查: list[dict[str, Any]]
+
+
 def _require_string(data: dict[str, Any], key: str) -> str:
     value = data.get(key)
     if not isinstance(value, str) or not value.strip():

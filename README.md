@@ -8,12 +8,12 @@
 
 ## 当前状态
 
-- 已有 39 条带来源定位的“已验证”制造业知识。
-- 已实现三个岗位画像、严格拒答、三类培训资源、L1/L2 审核、重生成闭环和 Streamlit 可视化。
+- 已有 39 条带来源定位的“已验证”制造业知识；另有 9 条跨领域草稿处于“待人工核验”，不会进入 ChromaDB 正式索引。
+- 主界面稳定支持数控机床操作工、CNC 编程员、质检员；焊接、工业互联网和工业 AI 画像仅保留为实验能力，不计入当前验收规模。
 - 已有 52 条 QA 机器初标案例，但尚未完成双人复核，不能作为正式指标。
 - 已准备双人复核规范、标准库 CSV 导出器和 12 条空白试标表；真实 A/B 标注、分歧仲裁和 P2 对 P1 流程的独立验收仍待完成。
-- P2 已在全新 Windows venv 完成离线复现：建库 39 条、`pytest` 44 项通过、三个演示场景通过；现等待 P3 独立复验。
-- DeepSeek、Qwen、GLM 已有适配代码；真实生成和异构投票仍取决于本机 Key 与实际 smoke test。
+- P2 的历史提交已由 P3 在独立 Windows venv 复验：建库 39 条、`pytest` 44 项通过、三个演示场景通过。
+- 当前代码离线验收为 61 项测试通过；DeepSeek、Qwen、GLM 仅完成零费用 smoke 门禁和故障模拟，真实调用仍需操作者显式确认。
 
 当前开工入口：`docs/当前状态与下一步执行方案.md`。
 
@@ -56,7 +56,11 @@ python knowledge_base/build_chromadb.py
 python -m pytest -q
 
 # 三个代表场景；任一失败会返回非零退出码
+# 此命令强制离线，即使 .env 中配置了 Key 也不会调用模型
 python test_run.py
+
+# 真实模型 smoke 的零费用 dry-run（预计调用次数为 0）
+python scripts/smoke_llm.py --provider deepseek --scenario generate
 
 # Streamlit 界面
 streamlit run app.py
@@ -90,6 +94,7 @@ python -m pytest -q tests/test_review_export.py
 | `CHROMA_DB_PATH` | 自定义本地 ChromaDB 路径 | `chroma_db` |
 
 默认不会调用付费审核 API。开启 L3 后，如果成功响应的独立供应商不足两个，系统只能返回“需人工复核”，不得伪造投票。
+`scripts/smoke_llm.py` 只有同时提供 `--execute` 并在终端输入 `EXECUTE` 才会发起真实调用。
 
 ## 文档
 
@@ -103,6 +108,7 @@ python -m pytest -q tests/test_review_export.py
 - `docs/评测集人工复核规范.md` — 双人独立复核、来源核对、分歧仲裁与 12 条试标
 - `docs/验收记录_P1_人工复核流程.md` — P1 自检证据与交给 P2 的独立验收清单
 - `docs/验收记录_P2_干净环境复现与离线基线.md` — P2 环境复现、离线结果与交给 P3 的验收清单
+- `docs/验收记录_P3_整改与零费用门禁.md` — P3 整改、P2 独立复验与真实调用阻塞
 - `artifacts/README.md` — 原始命令输出、实验和验收证据包索引
 
 ## 可信度边界

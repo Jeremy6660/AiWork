@@ -356,7 +356,7 @@
     "来源": "Modbus TCP/IP Protocol Specification V2.1",
     "来源定位": "https://modbus.org/docs/Modbus_Messaging_Implementation_Guide_V1_0b.pdf#Modbus TCP",
     "主题": ["工业互联网", "Modbus", "TCP", "工业协议", "边缘网关"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   },
   {
@@ -365,7 +365,7 @@
     "来源": "OPC Foundation - OPC UA Specification Part 2: Security Model",
     "来源定位": "https://reference.opcfoundation.org/Core/Part2/v105/",
     "主题": ["工业互联网", "OPC-UA", "加密通信", "数据互联", "工业协议"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   },
   {
@@ -374,7 +374,7 @@
     "来源": "华为边缘计算网关 AR650 部署指南",
     "来源定位": "https://support.huawei.com/enterprise/zh/doc/EDOC1100204155",
     "主题": ["工业互联网", "边缘计算", "网关部署", "网络配置", "IP地址"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   },
   {
@@ -383,7 +383,7 @@
     "来源": "Siemens SIMATIC S7-1200 系统手册",
     "来源定位": "https://cache.industry.siemens.com/dl/files/465/36932465/att_106597/v1/s71200_system_manual_en-US_en-US.pdf#Communication",
     "主题": ["工业互联网", "PLC", "S7-1200", "数据采集", "以太网"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   },
   {
@@ -392,7 +392,7 @@
     "来源": "ONNX Runtime Documentation - Model Optimization",
     "来源定位": "https://onnxruntime.ai/docs/performance/model-optimizations/",
     "主题": ["AI模型", "ONNX", "模型部署", "推理优化", "格式转换"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   },
   {
@@ -401,7 +401,7 @@
     "来源": "工业缺陷检测数据标注规范（参考COCO标注格式与制造业通用实践）",
     "来源定位": "https://cocodataset.org/#format-data",
     "主题": ["AI模型", "数据标注", "缺陷检测", "IoU", "标注规范"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   },
   {
@@ -410,7 +410,7 @@
     "来源": "Google MLOps最佳实践 - Model Monitoring",
     "来源定位": "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#model-monitoring",
     "主题": ["AI模型", "MLOps", "模型监控", "漂移检测", "重训练"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   },
   {
@@ -419,7 +419,7 @@
     "来源": "IEC 62443-2-1 工业通信网络-网络和系统安全 第2-1部分：建立IACS安全程序",
     "来源定位": "https://www.isa.org/standards-and-publications/isa-standards/isa-iec-62443-series",
     "主题": ["工业互联网", "工业安全", "OT/IT隔离", "IEC62443", "网络安全"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   },
   {
@@ -428,7 +428,7 @@
     "来源": "pandas官方文档 v2.0",
     "来源定位": "https://pandas.pydata.org/docs/user_guide/10min.html",
     "主题": ["Python", "pandas", "数据处理", "数据分析", "时序数据"],
-    "验证状态": "已验证",
+    "验证状态": "待人工核验",
     "核验日期": "2026-07-30"
   }
 ]

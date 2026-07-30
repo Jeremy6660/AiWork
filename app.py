@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from agents.profile import get_position_skills
+from agents.profile import get_position_skills, get_stable_positions
 from orchestrator import run
 
 
@@ -55,7 +55,7 @@ st.sidebar.caption("制造业个性化培训内容自动生成平台")
 
 position = st.sidebar.selectbox(
     "选择岗位",
-    ["数控机床操作工", "CNC编程员", "质检员", "焊接工", "工业互联网运维工程师", "AI应用工程师（工业方向）"],
+    get_stable_positions(),
 )
 topic = st.sidebar.text_input(
     "培训主题",
@@ -226,23 +226,21 @@ with tabs[3]:
     st.markdown("### 修改前后对比")
     iterations = result.get("迭代历史", [])
     if len(iterations) >= 2:
-        for i in range(len(iterations)):
-            prev_iter = iterations[i - 1] if i > 0 else None
-            current = iterations[i]
-            with st.expander(f"第 {current['轮次']} 轮{'（重生成）' if i > 0 else '（首次生成）'}", expanded=(i == len(iterations) - 1)):
-                cols = st.columns([1, 1])
-                with cols[0]:
-                    st.caption("资源类型与标题")
-                    st.write(f"类型：{current['资源类型']}")
-                    st.write(f"标题：{current['内容标题']}")
-                with cols[1]:
-                    st.caption("审核结果")
-                    st.metric("幻觉分数", f"{current['幻觉分数']:.2%}")
+        for previous, current in zip(iterations, iterations[1:]):
+            with st.expander(
+                f"第 {previous['轮次']} 轮 → 第 {current['轮次']} 轮",
+                expanded=current is iterations[-1],
+            ):
+                before, after = st.columns(2)
+                with before:
+                    st.caption("修改前正文")
+                    st.markdown(previous.get("正文", "未保存正文"))
+                    st.warning(f"修改建议：{previous.get('修改建议') or '无'}")
+                with after:
+                    st.caption("修改后正文")
+                    st.markdown(current.get("正文", "未保存正文"))
+                    st.metric("修改后幻觉分数", f"{current['幻觉分数']:.2%}")
                     st.write(f"通过：{'✅' if current['审核通过'] else '❌'}")
-                if prev_iter and not prev_iter.get("审核通过"):
-                    st.info(f"🔧 上轮修改建议：{prev_iter.get('修改建议', '无')}")
-                if current.get("修改建议"):
-                    st.warning(f"📝 本轮修改建议：{current['修改建议']}")
     elif iterations:
         current = iterations[0]
         st.success(f"✅ 首次生成即通过审核（幻觉分数：{current['幻觉分数']:.2%}）")

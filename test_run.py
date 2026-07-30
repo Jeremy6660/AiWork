@@ -6,6 +6,14 @@
 
 from __future__ import annotations
 
+import os
+
+# 本脚本是离线验收入口。即使本机 .env 配置了真实 Key，也绝不产生 API 请求。
+os.environ["GENERATION_MODE"] = "offline"
+os.environ["ENABLE_LLM_REVIEW"] = "0"
+os.environ["ENABLE_L3_VOTING"] = "0"
+os.environ["ALLOW_OFFLINE_FALLBACK"] = "1"
+
 from orchestrator import run
 
 

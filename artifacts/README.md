@@ -16,4 +16,6 @@
 | 目录 | 内容 | 汇总记录 |
 |---|---|---|
 | `p2_offline_reproduction_20260728/` | P2 Windows 干净环境、依赖、离线测试、三场景和机器初标非正式基线 | `docs/验收记录_P2_干净环境复现与离线基线.md` |
-
+| `p3_p2_reverification_20260730/` | P3 在独立临时 venv 对 P2 指定提交的复验 | `docs/验收记录_P3_整改与零费用门禁.md` |
+| `p3_profile_comparison_20260730/` | 质检员三画像、三资源类型的离线对比 | `docs/验收记录_P3_整改与零费用门禁.md` |
+| `p3_smoke_gate_20260730/` | P3 默认零调用 smoke dry-run 与安全边界 | `docs/验收记录_P3_整改与零费用门禁.md` |
