@@ -55,7 +55,7 @@ st.sidebar.caption("制造业个性化培训内容自动生成平台")
 
 position = st.sidebar.selectbox(
     "选择岗位",
-    ["数控机床操作工", "CNC编程员", "质检员"],
+    ["数控机床操作工", "CNC编程员", "质检员", "焊接工", "工业互联网运维工程师", "AI应用工程师（工业方向）"],
 )
 topic = st.sidebar.text_input(
     "培训主题",
@@ -198,15 +198,68 @@ with tabs[3]:
     a.metric("审核状态", flow_status)
     b.metric("幻觉分数", f"{result['幻觉分数']:.2%}")
     c.metric("实际重新生成", result["重试次数"])
-    st.json(result["审核明细"], expanded=False)
-    st.markdown("#### 逐条断言核查")
+
+    st.divider()
+    st.markdown("### 三层审核详情")
+    detail = result["审核明细"]
+    l1, l2, l3 = st.columns(3)
+    with l1:
+        st.markdown("**L1 规则引擎**")
+        st.code(detail.get("规则引擎", "未执行"))
+        problems = detail.get("规则问题", [])
+        if problems:
+            for p in problems:
+                st.warning(p)
+        else:
+            st.success("通过")
+    with l2:
+        st.markdown("**L2 知识锚定**")
+        st.code(detail.get("知识锚定", "未执行"))
+    with l3:
+        st.markdown("**L3 模型投票**")
+        st.code(detail.get("模型投票", "未触发"))
+        risk = detail.get("风险等级", "unknown")
+        color = "green" if risk == "low" else "orange" if risk == "medium" else "red"
+        st.markdown(f"风险等级：:{color}[{risk}]")
+
+    st.divider()
+    st.markdown("### 修改前后对比")
+    iterations = result.get("迭代历史", [])
+    if len(iterations) >= 2:
+        for i in range(len(iterations)):
+            prev_iter = iterations[i - 1] if i > 0 else None
+            current = iterations[i]
+            with st.expander(f"第 {current['轮次']} 轮{'（重生成）' if i > 0 else '（首次生成）'}", expanded=(i == len(iterations) - 1)):
+                cols = st.columns([1, 1])
+                with cols[0]:
+                    st.caption("资源类型与标题")
+                    st.write(f"类型：{current['资源类型']}")
+                    st.write(f"标题：{current['内容标题']}")
+                with cols[1]:
+                    st.caption("审核结果")
+                    st.metric("幻觉分数", f"{current['幻觉分数']:.2%}")
+                    st.write(f"通过：{'✅' if current['审核通过'] else '❌'}")
+                if prev_iter and not prev_iter.get("审核通过"):
+                    st.info(f"🔧 上轮修改建议：{prev_iter.get('修改建议', '无')}")
+                if current.get("修改建议"):
+                    st.warning(f"📝 本轮修改建议：{current['修改建议']}")
+    elif iterations:
+        current = iterations[0]
+        st.success(f"✅ 首次生成即通过审核（幻觉分数：{current['幻觉分数']:.2%}）")
+    else:
+        st.info("没有迭代记录。")
+
+    st.divider()
+    st.markdown("### 逐条断言核查")
     if result.get("断言核查"):
         st.dataframe(result["断言核查"], width="stretch", hide_index=True)
     else:
         st.info("没有可展示的断言核查结果。")
-    st.markdown("#### 迭代历史")
-    if result["迭代历史"]:
-        st.dataframe(result["迭代历史"], width="stretch", hide_index=True)
+
+    st.divider()
+    st.markdown("### 迭代历史（JSON）")
+    if iterations:
+        st.dataframe(iterations, width="stretch", hide_index=True)
 
 with tabs[4]:
     evaluation = result["评估结果"]

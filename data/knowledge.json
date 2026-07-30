@@ -349,5 +349,86 @@
     "主题": ["质量检测", "质量记录", "SPC", "数据追溯"],
     "验证状态": "已验证",
     "核验日期": "2026-07-18"
+  },
+  {
+    "知识ID": "IIOT-PROTO-001",
+    "内容": "Modbus TCP使用TCP端口502进行通信，数据帧包含MBAP报文头（7字节）+功能码+数据，支持读写线圈、寄存器等操作。",
+    "来源": "Modbus TCP/IP Protocol Specification V2.1",
+    "来源定位": "https://modbus.org/docs/Modbus_Messaging_Implementation_Guide_V1_0b.pdf#Modbus TCP",
+    "主题": ["工业互联网", "Modbus", "TCP", "工业协议", "边缘网关"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
+  },
+  {
+    "知识ID": "IIOT-PROTO-002",
+    "内容": "OPC-UA支持加密通信（SecurityPolicy）和用户认证（UserToken），比传统OPC DA更适合跨车间/跨工厂的工业数据互联场景。",
+    "来源": "OPC Foundation - OPC UA Specification Part 2: Security Model",
+    "来源定位": "https://reference.opcfoundation.org/Core/Part2/v105/",
+    "主题": ["工业互联网", "OPC-UA", "加密通信", "数据互联", "工业协议"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
+  },
+  {
+    "知识ID": "IIOT-EDGE-001",
+    "内容": "边缘计算网关应在部署前确认设备IP地址、子网掩码、网关地址与现场网络规划一致，并在专用测试网络环境下完成连通性验证（ping测试，延迟<10ms）。",
+    "来源": "华为边缘计算网关 AR650 部署指南",
+    "来源定位": "https://support.huawei.com/enterprise/zh/doc/EDOC1100204155",
+    "主题": ["工业互联网", "边缘计算", "网关部署", "网络配置", "IP地址"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
+  },
+  {
+    "知识ID": "IIOT-PLC-001",
+    "内容": "西门子S7-1200 PLC的以太网数据采集需启用PUT/GET通信许可（默认禁用），并配置正确的DB块属性（取消「仅符号访问」以允许绝对地址访问）。",
+    "来源": "Siemens SIMATIC S7-1200 系统手册",
+    "来源定位": "https://cache.industry.siemens.com/dl/files/465/36932465/att_106597/v1/s71200_system_manual_en-US_en-US.pdf#Communication",
+    "主题": ["工业互联网", "PLC", "S7-1200", "数据采集", "以太网"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
+  },
+  {
+    "知识ID": "AI-DEPLOY-001",
+    "内容": "将PyTorch训练模型转换为ONNX格式可降低部署对Python环境的依赖，并支持在TensorRT/OpenVINO等推理引擎上运行。ONNX导出需指定输入尺寸和动态轴（如batch size可变）。",
+    "来源": "ONNX Runtime Documentation - Model Optimization",
+    "来源定位": "https://onnxruntime.ai/docs/performance/model-optimizations/",
+    "主题": ["AI模型", "ONNX", "模型部署", "推理优化", "格式转换"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
+  },
+  {
+    "知识ID": "AI-ANNOTATE-001",
+    "内容": "工业缺陷检测标注应使用多边形标注工具精确包裹缺陷区域（非矩形框），标注IoU阈值≥0.85。每张图中缺陷区域需标注缺陷类型（如划伤/砂眼/毛刺）、严重等级（轻微/一般/严重）和是否影响功能。",
+    "来源": "工业缺陷检测数据标注规范（参考COCO标注格式与制造业通用实践）",
+    "来源定位": "https://cocodataset.org/#format-data",
+    "主题": ["AI模型", "数据标注", "缺陷检测", "IoU", "标注规范"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
+  },
+  {
+    "知识ID": "AI-ML-OPS-001",
+    "内容": "AI质检站的模型漂移监控应每日统计检测准确率（正确判定数/总检测数），当连续3天准确率低于95%或单日低于90%时触发重训练流程。",
+    "来源": "Google MLOps最佳实践 - Model Monitoring",
+    "来源定位": "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#model-monitoring",
+    "主题": ["AI模型", "MLOps", "模型监控", "漂移检测", "重训练"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
+  },
+  {
+    "知识ID": "IIOT-SECURITY-001",
+    "内容": "工业控制系统（ICS）网络应严格隔离OT网络与IT网络，通过工业防火墙或DMZ区进行安全隔离。任何从IT网络访问OT设备的远程连接必须经过跳板机+双因素认证。",
+    "来源": "IEC 62443-2-1 工业通信网络-网络和系统安全 第2-1部分：建立IACS安全程序",
+    "来源定位": "https://www.isa.org/standards-and-publications/isa-standards/isa-iec-62443-series",
+    "主题": ["工业互联网", "工业安全", "OT/IT隔离", "IEC62443", "网络安全"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
+  },
+  {
+    "知识ID": "PYTHON-DATA-001",
+    "内容": "pandas的DataFrame支持read_csv/read_json/read_sql等多种数据源读取，isnull()/dropna()/fillna()处理缺失值，groupby()/agg()进行分组聚合统计。处理工业时序数据时应先将时间列转为datetime类型（pd.to_datetime()）并设为索引。",
+    "来源": "pandas官方文档 v2.0",
+    "来源定位": "https://pandas.pydata.org/docs/user_guide/10min.html",
+    "主题": ["Python", "pandas", "数据处理", "数据分析", "时序数据"],
+    "验证状态": "已验证",
+    "核验日期": "2026-07-30"
   }
 ]

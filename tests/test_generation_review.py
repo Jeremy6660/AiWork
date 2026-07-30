@@ -28,7 +28,17 @@ def test_topic_and_profile_change_output():
 
 def test_three_difficulty_levels_map_to_three_required_resources():
     knowledge = search_knowledge("量具使用与质量检测")
-    base = build_profile("质检员")
+    # 质检员冷启动有多个技能 < 0.4（不合格品0.25/抽样0.35/质量记录0.35）
+    # 需要把全部弱技能推到 >= 0.4 才能让基础难度变成 应用
+    base = build_profile(
+        "质检员",
+        [
+            {"技能": "不合格品处理与8D报告", "正确": True},
+            {"技能": "不合格品处理与8D报告", "正确": True},
+            {"技能": "抽样检验标准应用", "正确": True},
+            {"技能": "质量记录与可追溯管理", "正确": True},
+        ],
+    )
     beginner = generate_content(apply_feedback(base, "降维解释"), knowledge, "量具使用")
     application = generate_content(base, knowledge, "量具使用")
     advanced = generate_content(apply_feedback(base, "进阶挑战"), knowledge, "量具使用")
