@@ -1,0 +1,199 @@
+# P4 消融实验与演示材料
+
+> 最后更新：2026-07-30
+> 本文件对应 P4 在 E1 冲刺中的交付物：消融实验方案、差异化样例、10 分钟演示脚本 v1。
+
+## 1. 实验目标
+
+基于现有三个稳定岗位（数控机床操作工、CNC编程员、质检员）、39 条已验证知识和 52 条 QA 初稿，设计并执行可重复的个性化与审核消融实验。所有实验在离线确定性模式下运行，不调用任何外部 API。
+
+## 2. 运行命令
+
+### 消融实验
+
+```powershell
+# 在项目根目录执行（需先激活 venv 并构建 ChromaDB）
+python scripts/p4_ablation_experiments.py
+```
+
+### 10 分钟演示脚本
+
+```powershell
+# 完整演示（离线模式）
+python scripts/p4_demo_script.py
+
+# 回放已保存结果（断网/无计算环境可用）
+python scripts/p4_demo_script.py --replay
+```
+
+## 3. 实验矩阵
+
+| 实验编号 | 内容 | 输入 | 对比维度 | 预期差异 |
+|---|---|---|---|---|
+| A | 画像差异化 | 质检员 + "量具使用与质量检测" | 入门/应用/进阶三种画像 | 三种资源类型（定制讲义/实操指南/分阶测试题） |
+| B | 审核强度对比 | 数控机床操作工 + "数控机床安全操作" | 无审核 / L1+L2 / L1+L2+L3 | L3 无 Key → 需人工复核，不伪造投票 |
+| C | 覆盖 vs 拒答 | 数控机床操作工 | 覆盖问题 / 未覆盖问题1 / 未覆盖问题2 | 覆盖正常生成；未覆盖安全拒答 |
+| D | 无依据断言修正 | CNC编程员 + "M代码编程" | 植入前 / 审核发现 / 重生成后 | FAKE 断言被 L1 拦截；重生成后通过 |
+
+## 4. 原始结果保存位置
+
+所有输出保存在 `artifacts/p4_ablation_experiments_20260730/`：
+
+| 文件 | 内容 | 大小 |
+|---|---|---|
+| `p4_ablation_experiments.json` | 汇总索引（含全部 4 个实验） | ~6KB |
+| `exp_A_personalization.json` | 实验 A：3 组画像完整对比（含全文） | ~8KB |
+| `exp_B_audit_strength.json` | 实验 B：3 种审核强度原始输出 | ~6KB |
+| `exp_C_coverage_rejection.json` | 实验 C：3 组覆盖/未覆盖对比 | ~2KB |
+| `exp_D_bad_assertion_fix.json` | 实验 D：断言植入→审核→修改→重审完整过程 | ~6KB |
+| `demo_output.json` | 10 分钟演示脚本完整输出（7 段落） | ~15KB |
+
+### 每条实验记录包含
+
+- 输入主题、岗位、画像难度
+- 生成内容全文（非摘要）
+- 引用知识 ID 和来源
+- 审核明细（规则引擎、知识锚定、模型投票状态）
+- 断言核查（逐条状态、相似度）
+- 耗时（perf_counter 精度）
+- 评估指标（事实性、专业性、可读性、匹配度、知识覆盖率、综合分）
+- 流程状态（通过 / 需人工复核 / 失败）
+
+## 5. 实验关键发现
+
+### 实验 A：画像差异化
+
+- **验证通过**：三种画像（入门/应用/进阶）在同一主题下产出三种不同资源类型。
+- 入门画像 → 定制讲义（学习检查环节）
+- 应用画像 → 实操指南（实操任务环节）
+- 进阶画像 → 分阶测试题（基础题/应用题/挑战题）
+- 三种画像的目标技能不同（入门偏基础、应用偏操作、进阶偏综合）
+
+### 实验 B：审核强度
+
+- 无审核基线：评估综合分 92.50%，但无法检测幻觉
+- L1+L2：规则检查 + 确定性知识锚定 → 3/3 断言有依据，幻觉分 0%
+- **L1+L2+L3（无 Key）**：植入 2 条矛盾断言（使用真实知识 ID 但写入相反事实）
+  - L1 规则通过（知识 ID 有效、格式正确）
+  - L2 锚定检出 2/5 无依据 → 幻觉分 40% > 20%
+  - 触发 L3 投票 → 无可用 Key → **流程状态 = 需人工复核**（不伪造投票）
+  - 外部阻塞记录：`available_providers=[]`
+
+### 实验 C：覆盖 vs 拒答
+
+- 覆盖问题"数控机床安全操作"：命中 3 条知识，正常生成，审核通过
+- 未覆盖问题"工业互联网网关配置"：命中 0 条 → 安全拒答（失败原因：知识库未覆盖该主题）
+- 边界问题"核电站操作规程"：命中 1 条（安全相关知识的语义匹配），正常生成但知识相关度低
+  - **不利结果**：搜索词过于泛化（"操作"）导致意外命中安全知识，非该领域真正的覆盖
+
+### 实验 D：无依据断言修正
+
+- 植入 `[FAKE-002]` 后，L1 规则检查立即发现"引用知识列表之外的 ID"，审核失败
+- 修改建议明确指向问题：`声明了知识列表之外的引用：FAKE-002`
+- 离线重生成后 FAKE-002 已移除，重新审核通过（幻觉分 0%）
+- 闭环验证：生成 → 审核 → 驳回 → 修改建议 → 重生成 → 再审核 → 通过
+
+## 6. 不支持 / 不利结果
+
+| 项目 | 说明 | 处理方式 |
+|---|---|---|
+| L3 真实投票 | 无 DeepSeek/Qwen/GLM Key，无法执行异构模型投票 | 记录为"外部阻塞"，流程状态 = "需人工复核"，不伪造投票 |
+| 机器初标 | 52 条 QA 均为机器初标，不能作为正式竞赛指标 | 所有实验标注"非正式"，不声称正式幻觉率/准确率 |
+| 离线生成内容 | 离线模式使用模板化生成，不如真实 LLM 丰富 | 标注生成模式为"离线确定性"，不伪装为 LLM 生成 |
+| 边界搜索 | "核电站操作规程"意外命中安全知识 | 记录为已知限制：语义匹配可能过度泛化 |
+| 代码版本 | 固定为 `01cb84e` | 记录在实验结果中，复现时需 checkout 同一 commit |
+
+## 7. 10 分钟演示脚本 v1
+
+### 段落与时长
+
+| 段落 | 主题 | 时长 | 演示内容 |
+|---|---|---|---|
+| 1 | 痛点 | 1:00 | 制造业培训三大挑战（周期长、缺个性化、大模型幻觉）→ 智策育训解决方案 |
+| 2 | 画像 | 2:00 | 岗位能力模型来源 → 三种学员画像（入门/应用/进阶）的技能掌握度、目标技能和学习路径 |
+| 3 | 检索证据 | 1:00 | ChromaDB 检索过程 → 3 条命中知识的 ID、内容、来源、来源定位和验证状态 |
+| 4 | 差异生成 | 2:00 | 同一主题"量具使用与质量检测"下三种画像的生成结果对比 → 三种资源类型差异 |
+| 5 | 审核驳回 | 2:00 | 植入无依据断言 → L1 规则拦截 → L2 锚定检出 → 未覆盖主题的安全拒答 |
+| 6 | 自动修正 | 1:00 | 审核建议 → 重新生成 → 再次审核通过 → 闭环验证 |
+| 7 | 可信边界 | 1:00 | 系统能力清单 / 当前限制 / 可信边界总结 |
+
+### 离线演示路径
+
+演示脚本支持两种模式：
+
+1. **正常模式**（`python scripts/p4_demo_script.py`）：实时执行全部 7 段落，保存完整输出到 `demo_output.json`
+2. **回放模式**（`python scripts/p4_demo_script.py --replay`）：从已保存的 `demo_output.json` 读取结果回放，零计算，适用于：
+   - 现场断网环境
+   - 环境未配置 Python 依赖时（只需 JSON 阅读器）
+   - 需要反复演练同一组结果
+
+### 演示准备清单
+
+- [ ] 确认 `demo_output.json` 已生成且包含全部 7 段落
+- [ ] 确认 `p4_ablation_experiments.json` 已生成
+- [ ] 准备回放模式作为断网备用
+- [ ] 核对每段时长不超过设定值
+- [ ] 确认演示中不暴露 API Key
+- [ ] 确认所有指标标注"非正式"或"机器初标"
+
+## 8. 交给 P1 的验收清单
+
+### 文件存在性检查
+
+- [ ] `scripts/p4_ablation_experiments.py` 存在且可运行
+- [ ] `scripts/p4_demo_script.py` 存在且可运行（含 `--replay` 模式）
+- [ ] `docs/p4_ablation_experiments.md` 存在且内容完整
+- [ ] `artifacts/p4_ablation_experiments_20260730/p4_ablation_experiments.json` 存在
+- [ ] `artifacts/p4_ablation_experiments_20260730/exp_A_personalization.json` 存在
+- [ ] `artifacts/p4_ablation_experiments_20260730/exp_B_audit_strength.json` 存在
+- [ ] `artifacts/p4_ablation_experiments_20260730/exp_C_coverage_rejection.json` 存在
+- [ ] `artifacts/p4_ablation_experiments_20260730/exp_D_bad_assertion_fix.json` 存在
+- [ ] `artifacts/p4_ablation_experiments_20260730/demo_output.json` 存在
+
+### 实验完整性检查
+
+- [ ] 实验 A：三种画像产出三种不同资源类型（定制讲义/实操指南/分阶测试题）
+- [ ] 实验 B：L3 无 Key 时流程状态为"需人工复核"，不伪造投票
+- [ ] 实验 B：矛盾断言被 L2 锚定正确检出（相似度 < 0.45 → 无依据）
+- [ ] 实验 C：覆盖问题正常通过，未覆盖问题安全拒答
+- [ ] 实验 D：FAKE 断言被审核拦截，重生成后移除并审核通过
+
+### 合规性检查
+
+- [ ] 所有脚本强制执行 `GENERATION_MODE=offline`，不发起网络请求
+- [ ] 不打印、记录或提交任何 API Key
+- [ ] 不把机器初标结果冒充正式竞赛指标
+- [ ] L3 阻塞状态明确记录为"外部阻塞"，不伪造投票结果
+- [ ] 每项实验包含原始输入、完整输出、耗时和流程状态
+- [ ] 不支持/不利结果已清楚列出
+
+### 演示准备检查
+
+- [ ] 10 分钟脚本 7 段落时长合计 10:00
+- [ ] 回放模式可正常执行（断网备选）
+- [ ] 演示脚本输出包含所有必要证据
+- [ ] 脚本可在干净 venv 中从零运行（`pip install -r requirements.txt && python knowledge_base/build_chromadb.py && python scripts/p4_ablation_experiments.py`）
+
+### 运行命令（P1 复现用）
+
+```powershell
+# 1. 环境准备
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+# 2. 构建知识库
+python knowledge_base/build_chromadb.py
+
+# 3. 运行消融实验
+python scripts/p4_ablation_experiments.py
+
+# 4. 运行演示脚本
+python scripts/p4_demo_script.py
+
+# 5. 测试回放模式
+python scripts/p4_demo_script.py --replay
+
+# 6. 验证结果
+python -c "import json; d=json.load(open('artifacts/p4_ablation_experiments_20260730/p4_ablation_experiments.json',encoding='utf-8')); print(f'Experiments: {len(d[\"experiments\"])}')"
+```

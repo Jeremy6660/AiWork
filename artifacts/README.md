@@ -19,3 +19,4 @@
 | `p3_p2_reverification_20260730/` | P3 在独立临时 venv 对 P2 指定提交的复验 | `docs/验收记录_P3_整改与零费用门禁.md` |
 | `p3_profile_comparison_20260730/` | 质检员三画像、三资源类型的离线对比 | `docs/验收记录_P3_整改与零费用门禁.md` |
 | `p3_smoke_gate_20260730/` | P3 默认零调用 smoke dry-run 与安全边界 | `docs/验收记录_P3_整改与零费用门禁.md` |
+| `p4_ablation_experiments_20260730/` | P4 消融实验（4项）、10分钟演示脚本输出和回放数据 | `docs/p4_ablation_experiments.md` |

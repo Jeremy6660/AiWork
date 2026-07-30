@@ -1,0 +1,45 @@
+# P4 消融实验证据
+
+本目录保存 P4 消融实验的可复现输出与原始数据。
+
+- 执行日期：2026-07-30
+- 代码版本：`01cb84e`
+- 网络调用：0（全离线确定性模式）
+- 所有结果均为机器初标/离线诊断，不是正式竞赛指标
+
+## 运行命令
+
+```powershell
+# 消融实验
+python scripts/p4_ablation_experiments.py
+
+# 10分钟演示脚本
+python scripts/p4_demo_script.py
+
+# 回放模式（断网备用）
+python scripts/p4_demo_script.py --replay
+```
+
+## 结果文件
+
+| 文件 | 内容 |
+|---|---|
+| `p4_ablation_experiments.json` | 汇总索引（4 个实验的完整数据） |
+| `exp_A_personalization.json` | 实验 A：同一主题下入门/应用/进阶三种画像的资源类型差异 |
+| `exp_B_audit_strength.json` | 实验 B：无审核、L1+L2、L1+L2+L3（无Key→需人工复核）三种审核强度 |
+| `exp_C_coverage_rejection.json` | 实验 C：覆盖问题 vs 未覆盖问题的安全拒答对比 |
+| `exp_D_bad_assertion_fix.json` | 实验 D：无依据断言植入→审核发现→修改建议→重生成→再审核全流程 |
+| `demo_output.json` | 10 分钟演示脚本 v1 的完整输出（7 段落），供回放和离线演示 |
+
+## 关键结果
+
+- 实验 A：三种画像产出三种不同资源类型（定制讲义/实操指南/分阶测试题）✓
+- 实验 B：L3 无 Key 时流程状态 = "需人工复核"，不伪造投票 ✓
+- 实验 C：覆盖问题通过，未覆盖问题安全拒答 ✓
+- 实验 D：FAKE 断言被审核拦截，重生成后移除并审核通过 ✓
+
+## 已知限制
+
+- L3 异构模型投票需要 DeepSeek/Qwen/GLM 真实 Key（当前阻塞）
+- 机器初标案例只产生"非正式"结果
+- 离线生成内容为确定性模板，不如真实 LLM 丰富
