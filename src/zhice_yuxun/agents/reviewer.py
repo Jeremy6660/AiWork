@@ -241,9 +241,11 @@ def review_content(培训内容: dict[str, Any], 知识列表: list[dict[str, An
     risk = "low" if hallucination_score <= 0.05 else "medium" if hallucination_score <= 0.2 else "high"
 
     votes: list[dict[str, Any]] = []
+    l3_triggered = False
     flow_status = "通过" if not invalid else "失败"
     passed = not invalid
     if hallucination_score > 0.2 and os.getenv("ENABLE_L3_VOTING", "0") == "1":
+        l3_triggered = True
         votes = _model_vote(培训内容, 知识列表)
         successful = [vote for vote in votes if isinstance(vote.get("通过"), bool)]
         if len(successful) < 2:
@@ -264,6 +266,15 @@ def review_content(培训内容: dict[str, Any], 知识列表: list[dict[str, An
 
     passed_votes = sum(1 for vote in votes if vote.get("通过") is True)
     available_votes = sum(1 for vote in votes if isinstance(vote.get("通过"), bool))
+    if not l3_triggered:
+        vote_status = "未触发"
+    elif available_votes == 0:
+        reason = "无可用供应商" if not votes else "供应商调用均失败"
+        vote_status = f"已触发：0/0（{reason}）"
+    elif available_votes < 2:
+        vote_status = f"已触发：{passed_votes}/{available_votes}（可用独立供应商不足两个）"
+    else:
+        vote_status = f"已触发：{passed_votes}/{available_votes}"
     return {
         "通过": passed,
         "流程状态": flow_status,
@@ -272,7 +283,7 @@ def review_content(培训内容: dict[str, Any], 知识列表: list[dict[str, An
         "审核明细": {
             "规则引擎": "pass",
             "知识锚定": f"{l2_mode}: {total - len(invalid)}/{total} 条有依据",
-            "模型投票": f"{passed_votes}/{available_votes}" if votes else "未触发",
+            "模型投票": vote_status,
             "风险等级": risk,
             "投票明细": votes,
         },

@@ -40,6 +40,19 @@
 
 `README.md` 和 `13_git_worktree_state_full.txt` 在清单生成后创建或更新，因此不把自身哈希写入自身。
 
+## 跨 checkout 规范化校验
+
+上面的原始字节哈希保留为 2026-07-28 的历史记录；其中前 5 个日志会受 Git
+`core.autocrlf` 影响，不作为跨操作系统校验依据。新的权威清单是
+`checksums.canonical-sha256.json`：按 BOM 读取 UTF-8/UTF-16，将 CRLF/CR 统一为
+LF，再以无 BOM 的 UTF-8 计算 SHA-256。运行：
+
+```powershell
+python scripts/verify_artifact_hashes.py
+```
+
+校验器只读原始日志，不会修改历史证据。
+
 > 2026-07-30 全面验收注记：当前 checkout 中
 > `01_environment_setup_full.txt` 至 `05_boundary_sample_full.txt` 的 SHA-256
 > 与上表不一致，其余 7 项一致。该问题可能与 Git 换行转换有关，但在重建

@@ -35,6 +35,7 @@ from src.zhice_yuxun.agents.retrieval import search_knowledge
 from src.zhice_yuxun.agents.reviewer import review_content
 from src.zhice_yuxun.llm_client import available_providers
 from src.zhice_yuxun.orchestrator import run
+from artifact_io import write_json_versioned
 
 OUTPUT_DIR = Path(
     os.getenv(
@@ -43,6 +44,7 @@ OUTPUT_DIR = Path(
     )
 ).resolve()
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+SAVED_FILES: list[str] = []
 
 # ── 工具函数 ────────────────────────────────────────────────────
 
@@ -68,8 +70,8 @@ def run_timed(fn: Any, *args: Any, **kwargs: Any) -> tuple[Any, float]:
 
 
 def save_experiment(filename: str, data: dict[str, Any]) -> None:
-    path = OUTPUT_DIR / filename
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    path = write_json_versioned(OUTPUT_DIR, filename, data)
+    SAVED_FILES.append(path.name)
     print(f"  -> {path.name}")
 
 
@@ -463,16 +465,10 @@ def main() -> int:
             "ALLOW_OFFLINE_FALLBACK": os.environ.get("ALLOW_OFFLINE_FALLBACK"),
         },
         "experiments": [exp_a, exp_b, exp_c, exp_d],
-        "per_experiment_files": [
-            "exp_A_personalization.json",
-            "exp_B_audit_strength.json",
-            "exp_C_coverage_rejection.json",
-            "exp_D_bad_assertion_fix.json",
-        ],
+        "per_experiment_files": list(SAVED_FILES),
     }
-    index_path = OUTPUT_DIR / "p4_ablation_experiments.json"
-    index_path.write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
+    index_path = write_json_versioned(
+        OUTPUT_DIR, "p4_ablation_experiments.json", summary
     )
 
     log_section("Summary")

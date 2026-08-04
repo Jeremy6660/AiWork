@@ -7,3 +7,5 @@ venv/
 chroma_db/
 .DS_Store
 .obsidian
+.worktrees/
+.pytest_tmp/

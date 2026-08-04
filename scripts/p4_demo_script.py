@@ -40,6 +40,7 @@ from src.zhice_yuxun.agents.profile import (
 )
 from src.zhice_yuxun.agents.retrieval import search_knowledge
 from src.zhice_yuxun.agents.reviewer import review_content
+from artifact_io import latest_versioned_file, write_json_versioned
 
 OUTPUT_DIR = Path(
     os.getenv(
@@ -540,10 +541,7 @@ def run_demo(replay: bool = False) -> int:
         "parts": parts,
     }
 
-    output_path = OUTPUT_DIR / "demo_output.json"
-    output_path.write_text(
-        json.dumps(demo_output, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    output_path = write_json_versioned(OUTPUT_DIR, "demo_output.json", demo_output)
     print(f"\n  Demo output saved: {output_path}")
     return 0
 
@@ -559,8 +557,8 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.replay:
-        replay_path = OUTPUT_DIR / "demo_output.json"
-        if not replay_path.exists():
+        replay_path = latest_versioned_file(OUTPUT_DIR, "demo_output.json")
+        if replay_path is None:
             print(f"[ERROR] No saved demo output at: {replay_path}")
             print(f"        Run without --replay first to generate demo output.")
             return 1
