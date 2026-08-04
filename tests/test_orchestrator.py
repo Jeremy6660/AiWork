@@ -25,6 +25,14 @@ def test_unknown_topic_fails_safely():
     assert "拒绝生成" in result["失败原因"]
 
 
+def test_cross_domain_topic_fails_before_generation():
+    result = run("数控机床操作工", question="核电站操作规程")
+    assert result["流程状态"] == "失败"
+    assert result["知识列表"] == []
+    assert result["培训内容"] == {}
+    assert "拒绝生成" in result["失败原因"]
+
+
 def test_retry_exhaustion_never_auto_passes(monkeypatch):
     def always_fail(content, knowledge):
         return {
@@ -242,8 +250,34 @@ def test_l3_requires_two_successful_independent_providers(monkeypatch):
 
     assert review["流程状态"] == "需人工复核"
     assert review["通过"] is False
-    assert review["审核明细"]["模型投票"] == "1/1"
+    assert review["审核明细"]["模型投票"] == "已触发：1/1（可用独立供应商不足两个）"
     assert "必须人工复核" in review["修改建议"]
+
+
+def test_l3_records_triggered_when_no_provider_is_available(monkeypatch):
+    """L3 已升级但无供应商时，不能误报为“未触发”。"""
+    import src.zhice_yuxun.agents.reviewer as reviewer
+    from src.zhice_yuxun.agents.generator import generate_content
+    from src.zhice_yuxun.agents.profile import build_profile
+    from src.zhice_yuxun.agents.retrieval import search_knowledge
+
+    knowledge = search_knowledge("M代码编程")
+    content = generate_content(build_profile("CNC编程员"), knowledge, "M代码编程")
+    monkeypatch.setenv("ENABLE_L3_VOTING", "1")
+    monkeypatch.setattr(
+        reviewer,
+        "_deterministic_anchor",
+        lambda _content, _knowledge: [
+            {"断言": "伪造", "状态": "无依据", "依据": ""},
+        ],
+    )
+    monkeypatch.setattr(reviewer, "available_providers", lambda: [])
+
+    review = reviewer.review_content(content, knowledge)
+
+    assert review["流程状态"] == "需人工复核"
+    assert review["通过"] is False
+    assert review["审核明细"]["模型投票"] == "已触发：0/0（无可用供应商）"
 
 
 # ── S5: 稳定性与异常处理 ──

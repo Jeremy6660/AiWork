@@ -1,0 +1,19 @@
+{
+  "algorithm": "sha256",
+  "canonicalization": "detect UTF-8/UTF-16 by BOM; normalize CRLF and CR to LF; encode UTF-8 without BOM",
+  "files": {
+    "01_environment_setup_full.txt": "23f3d7b6eb59e40e69099bd20e1f963a5cf6ffac609721a0b6ea869c171726d0",
+    "02_activation_retry_and_dependencies_full.txt": "863a3c4a7f02c6955cbf472901b7d44347b0dd18fc47500f05d8bda93cf03422",
+    "03_dependency_install_network_retry_full.txt": "99ae6b57f9743893326ac905b0a558fbee03a16dd60a6654b39b9ad7bb454a83",
+    "04_offline_acceptance_full.txt": "2a2e0a1499d93b73e7d9c0aebb3640958ec9d052d8d59164e420aee97c7ea864",
+    "05_boundary_sample_full.txt": "0f80853bdf25e725c957330127aff7b98ac002b2b906f3b7095f3623a7492918",
+    "06_command3_pip_install_success_full.txt": "8ad347e219c0beb3f807b2df92bc038f05c73f687277a582dd087ecf19c23438",
+    "07_dependency_versions_full.txt": "f3495924a4b575d5cc6870016a50b7248da7da26ba625313f4a5a2ddc98bb61c",
+    "08_command4_build_full.txt": "a47cc326fd804ce31a9d6c5802df00a77ef6633b66c83fdb8534d230c4f3100b",
+    "09_command5_compileall_full.txt": "eef268d7fd05a6ab5752e44e51156a655f2a43f0e743c46eadb137ab036befa3",
+    "10_command6_pytest_full.txt": "0b806f8ea804df3275bd7452e44ef9977ec27e79224bda1e30e90d492d19d09b",
+    "11_command7_three_scenarios_full.txt": "5fafa3a6e3088aff78a7ed71b79b1b2f53431d93b00622a9627485b526de5abd",
+    "12_command8_draft_benchmark_full.txt": "db77775377ab4f203b9b0fbf1c66143039eb42b75b8096f052934f3f71f9bd12",
+    "13_git_worktree_state_full.txt": "725ef0dc0f935d9aa308aa94ee83146eb8858590021748bc2311151a168e5b61"
+  }
+}

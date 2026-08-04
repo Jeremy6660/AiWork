@@ -19,7 +19,9 @@ from knowledge_base.build_chromadb import (
 from knowledge_base.embedding import HashingEmbeddingFunction, normalize_text
 
 
-MIN_RELEVANCE = 0.22
+# 0.28 可拒绝 E1 发现的跨领域误命中（“核电站操作规程”=0.2686），
+# 同时保留当前 QA 初稿中最低的有效预期命中（QA-023=0.2871）。
+MIN_RELEVANCE = 0.28
 TOP_K = 3
 EXPERIMENTAL_ONLY_TERMS = (
     "工业互联网",
