@@ -19,7 +19,7 @@
 | `p3_p2_reverification_20260730/` | P3 在独立临时 venv 对 P2 指定提交的复验 | `docs/验收记录_P3_整改与零费用门禁.md` |
 | `p3_profile_comparison_20260730/` | 质检员三画像、三资源类型的离线对比 | `docs/验收记录_P3_整改与零费用门禁.md` |
 | `p3_smoke_gate_20260730/` | P3 默认零调用 smoke dry-run 与安全边界 | `docs/验收记录_P3_整改与零费用门禁.md` |
-| `p4_ablation_experiments_20260730/` | P4 消融实验（4项）、10分钟演示脚本输出和回放数据 | `docs/p4_ablation_experiments.md` |
+| `p4_ablation_experiments_20260730/` | P4 2026-07-30 历史消融与演示原始输出；含已知跨领域误命中和旧 L3 状态缺陷，修复后版本一致的新证据包仍待生成 | `docs/p4_ablation_experiments.md` |
 
 P2 证据包另含 `checksums.canonical-sha256.json`，通过
 `python scripts/verify_artifact_hashes.py` 做跨 UTF-8/UTF-16、CRLF/LF 的规范化
