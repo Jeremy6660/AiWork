@@ -65,9 +65,41 @@ def available_providers() -> list[str]:
     ]
 
 
+def _text_from_content(content: Any) -> str:
+    """提取消息中的文本，不破坏可能存在的多模态 content。"""
+
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return "\n".join(
+            part["text"]
+            for part in content
+            if isinstance(part, dict) and isinstance(part.get("text"), str)
+        )
+    return ""
+
+
+def _ensure_json_instruction(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """返回带 JSON 指令的消息副本，兼容 DeepSeek 的 json_object 前置条件。"""
+
+    prepared = [dict(message) for message in messages]
+    joined = "\n".join(_text_from_content(message.get("content")) for message in prepared)
+    if "json" in joined.casefold():
+        return prepared
+
+    instruction = "请以 JSON 格式输出。"
+    if prepared and prepared[-1].get("role") == "user":
+        content = prepared[-1].get("content")
+        if isinstance(content, str):
+            prepared[-1]["content"] = f"{content}\n{instruction}"
+            return prepared
+    prepared.append({"role": "user", "content": instruction})
+    return prepared
+
+
 def call_llm_json(
     provider: str,
-    messages: list[dict[str, str]],
+    messages: list[dict[str, Any]],
     *,
     timeout: float = 60.0,
     max_attempts: int = 3,
@@ -88,12 +120,15 @@ def call_llm_json(
         max_retries=0,
     )
     model = os.getenv(config.model_env, config.default_model)
+    # DeepSeek 的 json_object 模式要求 prompt 中必须出现 "json" 字样，否则返回 400。
+    # 在重试循环外只准备一次，保证每次尝试使用相同请求内容且不修改调用方数据。
+    request_messages = _ensure_json_instruction(messages)
     last_error: Exception | None = None
     for attempt in range(max_attempts):
         try:
             response = client.chat.completions.create(
                 model=model,
-                messages=messages,  # type: ignore[arg-type]
+                messages=request_messages,  # type: ignore[arg-type]
                 temperature=0,
                 response_format={"type": "json_object"},
                 stream=False,
@@ -112,7 +147,7 @@ def call_llm_json(
 
 
 def call_llm_json_with_fallback(
-    messages: list[dict[str, str]],
+    messages: list[dict[str, Any]],
     *,
     providers: list[str] | None = None,
     timeout: float = 60.0,

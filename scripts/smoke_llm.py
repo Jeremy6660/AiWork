@@ -10,9 +10,12 @@ import time
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+project_root_text = str(PROJECT_ROOT)
+if project_root_text in sys.path:
+    sys.path.remove(project_root_text)
+sys.path.insert(0, project_root_text)
 
+import src.zhice_yuxun.llm_client as llm_client_module
 from src.zhice_yuxun.llm_client import LLMError, PROVIDERS, call_llm_json
 
 
@@ -25,7 +28,7 @@ SCENARIOS = {
         {
             "role": "user",
             "content": (
-                '只返回 {"通过": true, "说明": "smoke"}。'
+                '只返回严格 JSON：{"通过": true, "说明": "smoke"}。'
                 "不要补充参数、标准或安全结论。"
             ),
         },
@@ -54,6 +57,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"供应商：{args.provider}")
     print(f"模型：{model}")
     print(f"场景：{args.scenario}")
+    print(f"适配器路径：{Path(llm_client_module.__file__).resolve()}")
     print(f"Key 已配置：{'是' if key_configured else '否'}")
     print(f"预计逻辑调用次数：{1 if args.execute else 0}")
 
