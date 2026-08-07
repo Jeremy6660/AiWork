@@ -9,3 +9,4 @@ chroma_db/
 .obsidian
 .worktrees/
 .pytest_tmp/
+node_modules/
