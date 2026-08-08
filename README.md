@@ -13,8 +13,9 @@
 - 已有 52 条 QA 机器初标案例，但尚未完成双人复核，不能作为正式指标。
 - 已准备双人复核规范、标准库 CSV 导出器和 12 条空白试标表；真实 A/B 标注、分歧仲裁和 P2 对 P1 流程的独立验收仍待完成。
 - P2 的历史提交已由 P3 在独立 Windows venv 复验：建库 39 条、`pytest` 44 项通过、三个演示场景通过。
-- 当前代码离线验收为 68 项测试通过；DeepSeek、Qwen、GLM 仅完成零费用 smoke 门禁和故障模拟，真实调用仍需操作者显式确认。
-- 跨领域拒答、规范化证据哈希、L3 状态区分和 P4 非覆盖写入已修复并提交；E1 仍未通过，因为 12 条真人双人试标、P2→P1 与 P1→P4 两项独立互验、经授权的真实模型 smoke，以及与修复后提交一致的 P4 新证据包和独立复验仍未完成。
+- 当前代码离线验收为 133 项测试通过；DeepSeek、Qwen、GLM 仅完成零费用 smoke 门禁和故障模拟，真实调用仍需操作者显式确认。
+- C0–C4 岗位微课整改已完成首轮实现：3 个结构化任务包、场景画像、双审核、30 条冻结盲测和 UI 演示均已落地；3 个任务包仍是草稿，C4 仍需第二名成员独立复现。
+- E1 仍未通过，因为 12 条真人双人试标、P2→P1 与 P1→P4 两项独立互验、经授权的真实模型 smoke，以及与修复后提交一致的 P4 新证据包和独立复验仍未完成。
 
 当前开工入口：`docs/当前状态与下一步执行方案.md`；全面验收记录见
 `docs/验收记录_E1_全面验收.md`。
@@ -23,10 +24,10 @@
 
 - `src/zhice_yuxun/`：规范运行实现，包含编排、契约、模型客户端、界面和
   `agents/`。
-- `knowledge_base/`：建库、评测与人工复核导出工具。
+- `knowledge_base/`：建库、开发集评测、冻结盲测与人工复核导出工具。
 - `scripts/`：手动 smoke、消融和演示脚本。
 - `tests/`：离线确定性测试。
-- `data/`、`artifacts/`、`docs/`：数据、原始证据和文档。
+- `data/`、`artifacts/`、`docs/`：知识与草稿任务包、原始证据和文档。
 - 根目录的 `app.py`、`test_run.py` 是稳定启动入口；
   `orchestrator.py`、`contracts.py`、`llm_client.py` 仅保留旧导入兼容，
   新代码应从 `src.zhice_yuxun` 导入。
@@ -85,6 +86,9 @@ streamlit run app.py
 # 仅验证评测管线；输出不是正式指标
 python knowledge_base/evaluate_benchmark.py --include-draft
 
+# 30 条冻结盲测；结果仍是草稿任务包上的非正式指标
+python knowledge_base/evaluate_benchmark.py --blind
+
 # 人工复核材料的结构与空白栏校验
 python -m pytest -q tests/test_review_export.py
 ```
@@ -121,6 +125,7 @@ python -m pytest -q tests/test_review_export.py
 - `docs/接口约定.md` — 模块间 JSON 契约和状态定义
 - `docs/项目背景.md` — 项目定位、边界和评分维度
 - `docs/项目研究方案.md` — 完整研究方案
+- `docs/整改方案_培训内容具体化与可信评测.md` — C0–C4 岗位微课整改设计、执行记录与可信边界
 - `docs/新成员培训_环境工具搭建.md` — Windows 环境、Git、VS Code 和 API 配置
 - `docs/评测集人工复核规范.md` — 双人独立复核、来源核对、分歧仲裁与 12 条试标
 - `docs/验收记录_P1_人工复核流程.md` — P1 自检证据与交给 P2 的独立验收清单
@@ -136,6 +141,7 @@ python -m pytest -q tests/test_review_export.py
 - 单份内容的事实性、匹配度等是透明诊断值，不等于正式测试集准确率。
 - “幻觉率 <5% / 适配准确率 ≥85% / 覆盖率 ≥90%”只能在人工复核评测集上实测后使用。
 - 离线确定性生成不等于真实大模型生成。
+- 冻结盲测结果基于 3 个草稿任务包，不等于正式人工验收指标。
 - 制造业安全内容必须结合具体设备型号和现场规程，由专业人员复核后用于实际培训。
 
 接口与状态定义见 `docs/接口约定.md`，项目规则见 `AGENTS.md` 与 `CLAUDE.md`。
