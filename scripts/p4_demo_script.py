@@ -9,7 +9,9 @@ Usage (offline, no API keys needed):
 For replay from saved results:
     python scripts/p4_demo_script.py --replay
 
-Output saved to: artifacts/p4_ablation_experiments_20260730/demo_output.json
+JSON output saved to: artifacts/p4_ablation_experiments_20260730/demo_output.json
+C4 demo evidence saved to:
+    artifacts/zg_profile_comparison_20260808/c4_demo_微课演示.txt
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ import json
 import os
 import sys
 import time
+from contextlib import redirect_stdout
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -40,6 +43,7 @@ from src.zhice_yuxun.agents.profile import (
 )
 from src.zhice_yuxun.agents.retrieval import search_knowledge
 from src.zhice_yuxun.agents.reviewer import review_content
+from src.zhice_yuxun.orchestrator import run
 from artifact_io import latest_versioned_file, write_json_versioned
 
 OUTPUT_DIR = Path(
@@ -49,6 +53,12 @@ OUTPUT_DIR = Path(
     )
 ).resolve()
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+C4_EVIDENCE_PATH = (
+    ROOT
+    / "artifacts"
+    / "zg_profile_comparison_20260808"
+    / "c4_demo_微课演示.txt"
+)
 
 # ── Demo timing constants (seconds) ──────────────────────────────
 TIMING = {
@@ -62,6 +72,22 @@ TIMING = {
 }
 
 SEPARATOR = "\n" + "─" * 60
+
+
+class _Tee:
+    """把演示原始输出同时写到终端和 C4 证据文件。"""
+
+    def __init__(self, *streams: Any) -> None:
+        self.streams = streams
+
+    def write(self, data: str) -> int:
+        for stream in self.streams:
+            stream.write(data)
+        return len(data)
+
+    def flush(self) -> None:
+        for stream in self.streams:
+            stream.flush()
 
 
 def print_section(segment: str, duration_sec: int) -> None:
@@ -434,8 +460,91 @@ def demo_part6_自动修正() -> dict[str, Any]:
 
 
 def demo_part7_可信边界() -> dict[str, Any]:
-    """Part 7: Trust Boundary (1 min)."""
-    print_section("Part 7: 可信边界 — 系统的能力与限制", TIMING["可信边界"])
+    """Part 7: Task-package micro-course and trust boundaries (1 min)."""
+    print_section(
+        "Part 7: 任务包驱动的黄金微课与可信边界",
+        TIMING["可信边界"],
+    )
+
+    scene = {
+        "经验水平": "首次上岗",
+        "设备或工具": "",
+        "本次任务": "开机前安全检查",
+        "可用时长分钟": 20,
+    }
+    previous_allow_draft = os.environ.get("ALLOW_DRAFT_TASKPKG")
+    try:
+        os.environ["ALLOW_DRAFT_TASKPKG"] = "1"
+        golden_result = run(
+            "数控机床操作工",
+            question="开机前安全检查怎么做",
+            学习场景=scene,
+        )
+
+        os.environ.pop("ALLOW_DRAFT_TASKPKG", None)
+        draft_rejected = run(
+            "数控机床操作工",
+            question="开机前安全检查怎么做",
+            学习场景=scene,
+        )
+        cross_domain = run(
+            "数控机床操作工",
+            question="核电站操作规程",
+            学习场景=scene,
+        )
+    finally:
+        if previous_allow_draft is None:
+            os.environ.pop("ALLOW_DRAFT_TASKPKG", None)
+        else:
+            os.environ["ALLOW_DRAFT_TASKPKG"] = previous_allow_draft
+
+    taskpkg = golden_result.get("任务包") or {}
+    content = golden_result.get("培训内容") or {}
+    structured_fields = [
+        field
+        for field in (
+            "学习目标",
+            "适用条件",
+            "教学步骤",
+            "常见错误",
+            "练习任务",
+            "考核",
+            "补学建议",
+        )
+        if field in content
+    ]
+
+    print("\n  --- 任务包驱动的黄金微课（草稿态离线演示） ---")
+    print("  数据状态: 非正式（草稿任务包）")
+    print(f"  流程状态: {golden_result.get('流程状态')}")
+    print(f"  任务包ID: {taskpkg.get('任务包ID', '未命中')}")
+    print(f"  任务包提示: {golden_result.get('任务包提示', '')}")
+    print(f"  事实审核: {golden_result.get('事实审核')}")
+    print(f"  教学完整性: {golden_result.get('教学完整性')}")
+    completeness = golden_result.get("教学完整率")
+    completeness_text = (
+        f"{completeness:.2%}" if isinstance(completeness, (int, float)) else "未计算"
+    )
+    print(f"  教学完整率: {completeness_text}")
+    print(f"  结构化字段列表: {'、'.join(structured_fields) or '无'}")
+    print(f"  标题: {content.get('标题', '未生成')}")
+
+    print("\n  --- 对照 A：默认禁止草稿任务包生成完整微课 ---")
+    print(f"  流程状态: {draft_rejected.get('流程状态')}")
+    print(f"  任务包提示: {draft_rejected.get('任务包提示', '')}")
+    print(
+        "  是否生成结构化微课: "
+        f"{'是' if '教学步骤' in draft_rejected.get('培训内容', {}) else '否'}"
+    )
+
+    print("\n  --- 对照 B：跨领域问题安全拒绝 ---")
+    print("  问题: 核电站操作规程")
+    print(f"  流程状态: {cross_domain.get('流程状态')}")
+    print(f"  失败原因: {cross_domain.get('失败原因', '')}")
+    print(
+        "  系统行为: "
+        f"{'拒绝' if cross_domain.get('流程状态') == '失败' else '未拒绝'}"
+    )
 
     boundaries = {
         "segment": "可信边界",
@@ -460,6 +569,27 @@ def demo_part7_可信边界() -> dict[str, Any]:
             "L3 无 Key 时转'需人工复核'，不伪造投票结果",
             "3 个扩展岗位（焊接/工业互联网/AI）知识未核验",
         ],
+        "taskpackage_microcourse": {
+            "数据状态": "非正式（草稿任务包）",
+            "流程状态": golden_result.get("流程状态"),
+            "任务包ID": taskpkg.get("任务包ID"),
+            "任务包提示": golden_result.get("任务包提示", ""),
+            "事实审核": golden_result.get("事实审核"),
+            "教学完整性": golden_result.get("教学完整性"),
+            "教学完整率": golden_result.get("教学完整率"),
+            "结构化字段列表": structured_fields,
+            "标题": content.get("标题"),
+        },
+        "draft_rejection_comparison": {
+            "流程状态": draft_rejected.get("流程状态"),
+            "任务包提示": draft_rejected.get("任务包提示", ""),
+            "生成结构化微课": "教学步骤" in draft_rejected.get("培训内容", {}),
+        },
+        "cross_domain_comparison": {
+            "问题": "核电站操作规程",
+            "流程状态": cross_domain.get("流程状态"),
+            "失败原因": cross_domain.get("失败原因", ""),
+        },
     }
 
     print(f"\n  --- 系统能力 ---")
@@ -593,7 +723,12 @@ def main() -> int:
         print(f"\n  [REPLAY COMPLETE] Full data in: {replay_path}")
         return 0
 
-    return run_demo(replay=False)
+    C4_EVIDENCE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with C4_EVIDENCE_PATH.open("w", encoding="utf-8") as evidence_file:
+        with redirect_stdout(_Tee(sys.stdout, evidence_file)):
+            exit_code = run_demo(replay=False)
+            print(f"\n  C4 micro-course evidence saved: {C4_EVIDENCE_PATH}")
+    return exit_code
 
 
 if __name__ == "__main__":

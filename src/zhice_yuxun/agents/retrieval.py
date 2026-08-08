@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
 import chromadb
 
-from ..contracts import validate_knowledge_item
+from ..contracts import validate_knowledge_item, validate_training_task
+from ..paths import DATA_DIR
 from knowledge_base.build_chromadb import (
     COLLECTION_NAME,
     DEFAULT_DATA_PATH,
@@ -23,6 +25,7 @@ from knowledge_base.embedding import HashingEmbeddingFunction, normalize_text
 # 同时保留当前 QA 初稿中最低的有效预期命中（QA-023=0.2871）。
 MIN_RELEVANCE = 0.28
 TOP_K = 3
+TRAINING_TASKS_PATH = DATA_DIR / "training_tasks.json"
 EXPERIMENTAL_ONLY_TERMS = (
     "工业互联网",
     "modbus",
@@ -32,6 +35,17 @@ EXPERIMENTAL_ONLY_TERMS = (
     "onnx",
     "模型部署",
     "焊接",
+)
+
+_TRAINING_TASK_ALIASES = {
+    "开机安全检查": "开机前安全检查与门联锁验证",
+    "门锁": "门联锁",
+    "点检": "检查",
+}
+_QUESTION_SPLITTER = re.compile(
+    r"请问|请教|我想学习|我想了解|想学习|想了解|"
+    r"怎么做|怎么办|怎么|如何操作|如何进行|如何|怎样操作|怎样进行|怎样|"
+    r"是什么|有哪些|是否|以及|和|的|吗|呢"
 )
 
 _SYNONYMS = {
@@ -62,6 +76,95 @@ def _load_items(data_path: Path = DEFAULT_DATA_PATH) -> dict[str, dict[str, Any]
         if item.get("验证状态") == "已验证":
             items[item["知识ID"]] = item
     return items
+
+
+def _load_training_tasks(
+    data_path: Path = TRAINING_TASKS_PATH,
+) -> list[dict[str, Any]]:
+    raw = json.loads(data_path.read_text(encoding="utf-8"))
+    if isinstance(raw, dict):
+        raw = [raw]
+    if not isinstance(raw, list):
+        raise ValueError("培训任务包文件必须是对象或对象列表")
+
+    tasks: list[dict[str, Any]] = []
+    for task in raw:
+        validate_training_task(task)
+        tasks.append(task)
+    return tasks
+
+
+def _training_question_terms(question: str) -> list[str]:
+    """用少量问句停用词和任务别名得到可解释的匹配词。"""
+
+    normalized = normalize_text(question)
+    alias_terms: list[str] = []
+    for alias, canonical in _TRAINING_TASK_ALIASES.items():
+        normalized_alias = normalize_text(alias)
+        if normalized_alias in normalized:
+            normalized_canonical = normalize_text(canonical)
+            normalized = normalized.replace(normalized_alias, normalized_canonical)
+            alias_terms.append(normalized_canonical)
+
+    terms = [
+        normalize_text(part)
+        for part in _QUESTION_SPLITTER.split(normalized)
+        if len(normalize_text(part)) >= 2
+    ]
+    return list(dict.fromkeys(alias_terms + terms))
+
+
+def search_training_task(position: str, question: str) -> dict | None:
+    """按岗位和任务关键词返回最相关的完整培训任务包。"""
+
+    if not isinstance(position, str) or not position.strip():
+        raise ValueError("position 必须是非空字符串")
+    if not isinstance(question, str) or not question.strip():
+        raise ValueError("question 必须是非空字符串")
+
+    normalized_position = position.strip()
+    terms = _training_question_terms(question.strip())
+    best_task: dict[str, Any] | None = None
+    best_score: tuple[int, int, int] | None = None
+
+    for task in _load_training_tasks():
+        if task.get("岗位") != normalized_position:
+            continue
+
+        task_name = normalize_text(str(task.get("任务名称", "")))
+        raw_topics = task.get("主题", [])
+        if isinstance(raw_topics, str):
+            topics = [raw_topics]
+        elif isinstance(raw_topics, list):
+            topics = [topic for topic in raw_topics if isinstance(topic, str)]
+        else:
+            topics = []
+        normalized_topics = [normalize_text(topic) for topic in topics]
+
+        step_texts = [
+            normalize_text(step.get("操作", ""))
+            for step in task.get("操作步骤", [])
+            if isinstance(step, dict) and isinstance(step.get("操作"), str)
+        ]
+        matched_steps = {
+            index
+            for index, step_text in enumerate(step_texts)
+            if any(term in step_text for term in terms)
+        }
+        name_hit = any(term in task_name for term in terms)
+        topic_hit = any(
+            term in topic for term in terms for topic in normalized_topics
+        )
+
+        if not (name_hit or topic_hit or len(matched_steps) >= 3):
+            continue
+
+        score = (len(matched_steps), int(name_hit), int(topic_hit))
+        if best_score is None or score > best_score:
+            best_task = task
+            best_score = score
+
+    return best_task
 
 
 def _get_collection(db_path: Path = DEFAULT_DB_PATH):

@@ -27,6 +27,30 @@ class KnowledgeItem(TypedDict, total=False):
     验证状态: str
 
 
+class LearningScene(TypedDict, total=False):
+    经验水平: str
+    设备或工具: str
+    本次任务: str
+    可用时长分钟: int
+
+
+class TrainingTask(TypedDict, total=False):
+    任务包ID: str
+    岗位: str
+    任务名称: str
+    适用范围: dict[str, Any]
+    前置技能: list[str]
+    知识ID: list[str]
+    学习目标: list[dict[str, Any]]
+    操作步骤: list[dict[str, Any]]
+    常见错误: list[dict[str, Any]]
+    练习任务: dict[str, Any]
+    考核: dict[str, Any]
+    验证状态: str
+    版本: str
+    来源缺口: list[dict[str, Any]]
+
+
 class LearnerProfile(TypedDict, total=False):
     岗位: str
     技能掌握度: dict[str, float]
@@ -34,6 +58,9 @@ class LearnerProfile(TypedDict, total=False):
     推荐难度: str
     画像依据: list[str]
     学习路径: list[dict[str, Any]]
+    学习场景: dict[str, Any]
+    本次学习目标: list[str]
+    内容约束: list[str]
 
 
 class TrainingContent(TypedDict, total=False):
@@ -43,6 +70,22 @@ class TrainingContent(TypedDict, total=False):
     引用来源: list[str]
     引用知识ID: list[str]
     生成模式: str
+    学习目标: list[dict[str, Any]]
+    适用条件: dict[str, Any]
+    教学步骤: list[dict[str, Any]]
+    常见错误: list[dict[str, Any]]
+    练习任务: dict[str, Any]
+    考核: dict[str, Any]
+    补学建议: list[str]
+
+
+class ReviewResult(TypedDict, total=False):
+    事实审核: str
+    教学完整性: str
+    教学问题: list[str]
+    教学完整率: float
+    目标考核对齐率: float
+    关键步骤可判定率: float
 
 
 class IterationRecord(TypedDict, total=False):
@@ -118,3 +161,102 @@ def validate_training_content(content: dict[str, Any]) -> TrainingContent:
     ):
         raise ContractError("字段“引用来源”必须是字符串列表")
     return content  # type: ignore[return-value]
+
+
+def validate_learning_scene(scene: dict[str, Any]) -> LearningScene:
+    """校验可选学习场景。
+
+    字段可以缺失或为 None；经验水平的空字符串也视为未填写。
+    """
+
+    if not isinstance(scene, dict):
+        raise ContractError("学习场景必须是字典")
+
+    experience = scene.get("经验水平")
+    if experience is not None:
+        if not isinstance(experience, str):
+            raise ContractError("字段“经验水平”必须是字符串")
+        experience = experience.strip()
+        if experience and experience not in {"首次上岗", "有基础", "熟练"}:
+            raise ContractError("字段“经验水平”必须为首次上岗、有基础或熟练")
+
+    duration = scene.get("可用时长分钟")
+    if duration is not None and (
+        not isinstance(duration, int) or isinstance(duration, bool) or duration <= 0
+    ):
+        raise ContractError("字段“可用时长分钟”必须是大于 0 的整数")
+
+    return scene  # type: ignore[return-value]
+
+
+def validate_training_task(task: dict[str, Any]) -> TrainingTask:
+    if not isinstance(task, dict):
+        raise ContractError("培训任务包必须是字典")
+
+    _require_string(task, "任务包ID")
+    _require_string(task, "岗位")
+
+    if "知识ID" in task:
+        knowledge_ids = task["知识ID"]
+        if not isinstance(knowledge_ids, list) or not all(
+            isinstance(item, str) and item.strip() for item in knowledge_ids
+        ):
+            raise ContractError("字段“知识ID”必须是非空字符串列表")
+
+    objective_keys = {"行为", "条件", "标准"}
+    if "学习目标" in task:
+        objectives = task["学习目标"]
+        if not isinstance(objectives, list):
+            raise ContractError("字段“学习目标”必须是字典列表")
+        for index, objective in enumerate(objectives, start=1):
+            if not isinstance(objective, dict) or not objective_keys.issubset(objective):
+                raise ContractError(
+                    f"学习目标第 {index} 项必须包含行为、条件、标准"
+                )
+
+    step_keys = {"序号", "操作", "判定标准", "异常处理", "引用知识ID"}
+    if "操作步骤" in task:
+        steps = task["操作步骤"]
+        if not isinstance(steps, list):
+            raise ContractError("字段“操作步骤”必须是字典列表")
+        for index, step in enumerate(steps, start=1):
+            if not isinstance(step, dict) or not step_keys.issubset(step):
+                raise ContractError(
+                    f"操作步骤第 {index} 项必须包含序号、操作、判定标准、"
+                    "异常处理、引用知识ID"
+                )
+
+    if "验证状态" in task:
+        validation_status = _require_string(task, "验证状态")
+        if validation_status not in {"草稿", "已核验"}:
+            raise ContractError("字段“验证状态”必须为草稿或已核验")
+
+    return task  # type: ignore[return-value]
+
+
+def validate_training_content_optional(content: dict[str, Any]) -> dict[str, Any]:
+    """只校验结构化微课的新增可选字段，不改变旧字段语义。"""
+
+    if not isinstance(content, dict):
+        raise ContractError("培训内容必须是字典")
+
+    for key in ("学习目标", "教学步骤", "常见错误"):
+        if key in content:
+            value = content[key]
+            if not isinstance(value, list) or not all(
+                isinstance(item, dict) for item in value
+            ):
+                raise ContractError(f"字段“{key}”必须是字典列表")
+
+    for key in ("适用条件", "练习任务", "考核"):
+        if key in content and not isinstance(content[key], dict):
+            raise ContractError(f"字段“{key}”必须是字典")
+
+    if "补学建议" in content:
+        suggestions = content["补学建议"]
+        if not isinstance(suggestions, list) or not all(
+            isinstance(item, str) for item in suggestions
+        ):
+            raise ContractError("字段“补学建议”必须是字符串列表")
+
+    return content

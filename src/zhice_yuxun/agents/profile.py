@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ..contracts import validate_profile
+from ..contracts import validate_learning_scene, validate_profile
 from ..paths import KNOWLEDGE_BASE_DIR
 
 
@@ -124,9 +124,15 @@ def _build_learning_path(
     return path
 
 
-def build_profile(岗位: str, 答题记录: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+def build_profile(
+    岗位: str,
+    答题记录: list | None = None,
+    学习场景: dict | None = None,
+) -> dict:
     if not isinstance(岗位, str) or not 岗位.strip():
         raise ValueError("岗位必须是非空字符串")
+    if 学习场景 is not None:
+        validate_learning_scene(学习场景)
     ontology = load_ontology()
     if 岗位 not in ontology:
         raise ValueError(f"知识本体暂未覆盖岗位：{岗位}")
@@ -190,6 +196,33 @@ def build_profile(岗位: str, 答题记录: list[dict[str, Any]] | None = None)
         "画像依据": evidence,
         "学习路径": _build_learning_path(definitions, skills),
     }
+    if 学习场景:
+        task = 学习场景.get("本次任务")
+        objectives = []
+        if isinstance(task, str) and task.strip():
+            objectives.append(f"能按检查表独立完成{task.strip()}")
+
+        constraints: list[str] = []
+        equipment = 学习场景.get("设备或工具")
+        if (
+            not isinstance(equipment, str)
+            or not equipment.strip()
+            or "未知" in equipment
+        ):
+            constraints.append("设备型号未知，不得生成型号专属参数")
+
+        experience_constraints = {
+            "首次上岗": "采用分步示范和检查表引导，明确关键步骤的判定标准",
+            "有基础": "突出易错点和独立练习，保留关键安全提示",
+            "熟练": "减少基础解释，增加异常判断和综合练习",
+        }
+        experience = 学习场景.get("经验水平")
+        if experience in experience_constraints:
+            constraints.append(experience_constraints[experience])
+
+        profile["学习场景"] = 学习场景
+        profile["本次学习目标"] = objectives
+        profile["内容约束"] = constraints
     validate_profile(profile)
     return profile
 

@@ -34,7 +34,7 @@ def test_cross_domain_topic_fails_before_generation():
 
 
 def test_retry_exhaustion_never_auto_passes(monkeypatch):
-    def always_fail(content, knowledge):
+    def always_fail(content, knowledge, **kwargs):
         return {
             "通过": False,
             "流程状态": "失败",
@@ -69,7 +69,7 @@ def test_fixed_switch_triggers_retry_then_passes(monkeypatch):
     """S1 通过标准：P1能通过固定开关触发一次失败后重试。"""
     call_count = [0]
 
-    def fail_once_then_pass(content, knowledge):
+    def fail_once_then_pass(content, knowledge, **kwargs):
         call_count[0] += 1
         if call_count[0] == 1:
             return {
@@ -230,7 +230,7 @@ def test_l3_requires_two_successful_independent_providers(monkeypatch):
     monkeypatch.setattr(
         reviewer,
         "_deterministic_anchor",
-        lambda _content, _knowledge: [
+        lambda _content, _knowledge, _taskpkg=None: [
             {"断言": "伪造1", "状态": "无依据", "依据": ""},
             {"断言": "伪造2", "状态": "无依据", "依据": ""},
             {"断言": "伪造3", "状态": "无依据", "依据": ""},
@@ -267,7 +267,7 @@ def test_l3_records_triggered_when_no_provider_is_available(monkeypatch):
     monkeypatch.setattr(
         reviewer,
         "_deterministic_anchor",
-        lambda _content, _knowledge: [
+        lambda _content, _knowledge, _taskpkg=None: [
             {"断言": "伪造", "状态": "无依据", "依据": ""},
         ],
     )

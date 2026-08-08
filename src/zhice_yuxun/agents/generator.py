@@ -12,6 +12,8 @@ from ..contracts import (
     validate_knowledge_item,
     validate_profile,
     validate_training_content,
+    validate_training_content_optional,
+    validate_training_task,
 )
 from ..llm_client import LLMError, available_providers, call_llm_json
 
@@ -155,6 +157,256 @@ def _offline_generate(
         "生成模式": mode,
     }
     return _validate_grounding(content, knowledge)
+
+
+def _deduplicate_strings(items: list[str]) -> list[str]:
+    return list(dict.fromkeys(items))
+
+
+def _taskpkg_all_citation_ids(taskpkg: dict[str, Any]) -> list[str]:
+    """Collect every knowledge ID referenced anywhere in a task package."""
+
+    citation_ids = list(taskpkg.get("知识ID", []))
+
+    def collect(value: Any) -> None:
+        if isinstance(value, dict):
+            for key, nested in value.items():
+                if key == "引用知识ID":
+                    if not isinstance(nested, list) or not all(
+                        isinstance(item, str) and item.strip() for item in nested
+                    ):
+                        raise ContractError("任务包字段“引用知识ID”必须是非空字符串列表")
+                    citation_ids.extend(item.strip() for item in nested)
+                else:
+                    collect(nested)
+        elif isinstance(value, list):
+            for nested in value:
+                collect(nested)
+
+    collect(taskpkg)
+    return _deduplicate_strings(citation_ids)
+
+
+def _taskpkg_output_citation_ids(taskpkg: dict[str, Any]) -> list[str]:
+    citation_ids = list(taskpkg["知识ID"])
+    for field in ("学习目标", "操作步骤", "常见错误"):
+        for item in taskpkg[field]:
+            references = item.get("引用知识ID", [])
+            if not isinstance(references, list) or not references or not all(
+                isinstance(reference, str) and reference.strip()
+                for reference in references
+            ):
+                raise ContractError(f"任务包字段“{field}”的每一项都必须引用知识ID")
+            citation_ids.extend(reference.strip() for reference in references)
+    return _deduplicate_strings(citation_ids)
+
+
+def _taskpkg_citation(item: dict[str, Any]) -> str:
+    """把知识ID渲染为独立方括号引用，供审核正则逐ID提取。
+
+    例：["CNC-SAFE-003", "CNC-SAFE-011"] → "[CNC-SAFE-003][CNC-SAFE-011]"
+    （不能用顿号合并为 [A、B]，reviewer 的 CITATION_PATTERN 只匹配单 ID）
+    """
+
+    return "".join(f"[{reference}]" for reference in item["引用知识ID"])
+
+
+def _taskpkg_markdown_value(value: Any) -> str:
+    if isinstance(value, list):
+        return "、".join(str(item) for item in value)
+    return str(value)
+
+
+def _render_taskpkg_markdown(
+    taskpkg: dict[str, Any],
+    suggestions: list[str],
+    suggestion_refs: list[list[str]] | None = None,
+) -> str:
+    scope = taskpkg["适用范围"]
+    model = str(scope.get("具体型号", "")).strip()
+    sections: list[str] = []
+    if "未指定" in model or "未知" in model:
+        sections.append(
+            "> 边界提示：本任务包未指定具体设备型号，涉及型号专属参数时请查阅本机操作说明书。"
+        )
+
+    sections.append(
+        "## 本次培训任务\n\n"
+        f"{taskpkg['任务名称']}\n\n"
+        f"- 设备类型：{_taskpkg_markdown_value(scope['设备类型'])}\n"
+        f"- 培训环境：{_taskpkg_markdown_value(scope['培训环境'])}\n"
+        f"- 建议时长：{scope['建议时长分钟']} 分钟\n"
+        f"- 前置技能：{_taskpkg_markdown_value(taskpkg['前置技能'])}"
+    )
+
+    objective_lines = [
+        f"- {item['行为']}（{item['条件']}，{item['标准']}） {_taskpkg_citation(item)}"
+        for item in taskpkg["学习目标"]
+    ]
+    sections.append("## 学习目标\n\n" + "\n".join(objective_lines))
+
+    step_blocks: list[str] = []
+    for step in taskpkg["操作步骤"]:
+        citation = _taskpkg_citation(step)
+        lines = [
+            f"### 步骤{step['序号']} {step['操作']} {citation}",
+            f"- 判定标准：{step['判定标准']} {citation}",
+        ]
+        if step.get("异常处理"):
+            lines.append(f"- 异常处理：{step['异常处理']} {citation}")
+        step_blocks.append("\n".join(lines))
+    sections.append("## 分步操作与判断标准\n\n" + "\n\n".join(step_blocks))
+
+    error_lines = [
+        f"- {item['错误']} → {item['后果']} → {item['纠正']} {_taskpkg_citation(item)}"
+        for item in taskpkg["常见错误"]
+    ]
+    sections.append("## 常见错误与纠正\n\n" + "\n".join(error_lines))
+
+    practice = taskpkg["练习任务"]
+    practice_refs = taskpkg.get("练习任务引用", [])
+    practice_citation = (
+        _taskpkg_citation({"引用知识ID": practice_refs})
+        if practice_refs
+        else ""
+    )
+    sections.append(
+        "## 练习任务\n\n"
+        f"- 任务：{practice['任务']} {practice_citation}\n"
+        f"- 所需材料：{_taskpkg_markdown_value(practice['所需材料'])}\n"
+        f"- 完成证据：{practice['完成证据']}"
+    )
+
+    assessment = taskpkg["考核"]
+    question_lines = []
+    all_question_refs: list[str] = []
+    for index, item in enumerate(assessment["题目"], start=1):
+        question_refs = item.get("引用知识ID", [])
+        if question_refs:
+            all_question_refs.extend(question_refs)
+        question_citation = (
+            _taskpkg_citation({"引用知识ID": question_refs})
+            if question_refs
+            else ""
+        )
+        question_lines.append(f"{index}. {item['题目']} {question_citation}")
+    assessment_refs = assessment.get("引用知识ID", [])
+    if not assessment_refs:
+        assessment_refs = _deduplicate_strings(all_question_refs)
+    assessment_citation = (
+        _taskpkg_citation({"引用知识ID": assessment_refs})
+        if assessment_refs
+        else ""
+    )
+    sections.append(
+        "## 考核与合格标准\n\n"
+        + "\n".join(question_lines)
+        + f"\n\n- 合格线：{assessment['合格线'].strip()} {assessment_citation}"
+    )
+
+    refs_by_index = suggestion_refs or []
+    suggestion_lines = []
+    for index, suggestion in enumerate(suggestions):
+        refs = refs_by_index[index] if index < len(refs_by_index) else []
+        if refs:
+            suggestion_lines.append(
+                f"- {suggestion} {_taskpkg_citation({'引用知识ID': refs})}"
+            )
+        else:
+            suggestion_lines.append(f"- {suggestion}")
+    sections.append("## 错后补学\n\n" + "\n".join(suggestion_lines))
+    return "\n\n".join(sections)
+
+
+def _offline_generate_taskpkg(
+    profile: dict[str, Any],
+    knowledge: list[dict[str, Any]],
+    topic: str,
+    taskpkg: dict[str, Any],
+    mode: str,
+) -> dict[str, Any]:
+    """Deterministically render a complete micro-course from a task package."""
+
+    if not isinstance(taskpkg, dict):
+        validate_training_task(taskpkg)
+    status = taskpkg.get("验证状态")
+    if status != "已核验":
+        if status == "草稿" and os.getenv("ALLOW_DRAFT_TASKPKG") == "1":
+            mode = "离线确定性（草稿任务包）"
+        else:
+            raise ContractError("任务包尚未核验，不能作为完整培训课程依据")
+    validate_training_task(taskpkg)
+
+    required_fields = {
+        "任务名称": str,
+        "适用范围": dict,
+        "前置技能": list,
+        "知识ID": list,
+        "学习目标": list,
+        "操作步骤": list,
+        "常见错误": list,
+        "练习任务": dict,
+        "考核": dict,
+    }
+    for field, expected_type in required_fields.items():
+        if not isinstance(taskpkg.get(field), expected_type):
+            raise ContractError(f"任务包字段“{field}”类型不正确或缺失")
+
+    scope = taskpkg["适用范围"]
+    for field in ("设备类型", "培训环境", "建议时长分钟"):
+        if field not in scope:
+            raise ContractError(f"任务包字段“适用范围.{field}”缺失")
+
+    all_taskpkg_ids = _taskpkg_all_citation_ids(taskpkg)
+    available_ids = {item["知识ID"] for item in knowledge}
+    missing_ids = set(all_taskpkg_ids) - available_ids
+    if missing_ids:
+        raise ContractError(
+            "任务包引用的知识尚未加载：" + "、".join(sorted(missing_ids))
+        )
+
+    citation_ids = _taskpkg_output_citation_ids(taskpkg)
+    if not citation_ids:
+        raise ContractError("任务包缺少引用知识ID")
+    knowledge_by_id = {item["知识ID"]: item for item in knowledge}
+    sources = _deduplicate_strings(
+        [knowledge_by_id[citation_id]["来源"] for citation_id in citation_ids]
+    )
+    remedial = taskpkg["考核"].get("错后补学", [])
+    if not isinstance(remedial, list) or not all(
+        isinstance(item, dict) and isinstance(item.get("补学内容"), str)
+        for item in remedial
+    ):
+        raise ContractError("任务包字段“考核.错后补学”必须包含补学内容")
+    suggestions = [item["补学内容"] for item in remedial]
+    suggestion_refs = [
+        [reference.strip() for reference in item.get("引用知识ID", [])]
+        for item in remedial
+    ]
+
+    content = {
+        "类型": "实操指南",
+        "标题": f"{taskpkg['任务名称']}｜{taskpkg['岗位']} 岗位微课",
+        "正文": _render_taskpkg_markdown(taskpkg, suggestions, suggestion_refs),
+        "引用来源": sources,
+        "引用知识ID": citation_ids,
+        "生成模式": mode,
+        "学习目标": taskpkg["学习目标"],
+        "适用条件": {
+            "设备": scope["设备类型"],
+            "环境": scope["培训环境"],
+            "前置技能": taskpkg["前置技能"],
+            "建议时长分钟": scope["建议时长分钟"],
+        },
+        "教学步骤": taskpkg["操作步骤"],
+        "常见错误": taskpkg["常见错误"],
+        "练习任务": taskpkg["练习任务"],
+        "考核": taskpkg["考核"],
+        "补学建议": suggestions,
+    }
+    validate_training_content(content)
+    validate_training_content_optional(content)
+    return content
 
 
 def _llm_generate(
@@ -303,6 +555,8 @@ def generate_content(
     知识列表: list[dict[str, Any]],
     培训主题: str,
     修改建议: str = "",
+    *,
+    任务包: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     validate_profile(画像)
     _validate_knowledge(知识列表)
@@ -310,6 +564,15 @@ def generate_content(
         raise ValueError("培训主题必须是非空字符串")
     if not isinstance(修改建议, str):
         raise ValueError("修改建议必须是字符串")
+
+    if 任务包 is not None:
+        return _offline_generate_taskpkg(
+            画像,
+            知识列表,
+            培训主题.strip(),
+            任务包,
+            "离线确定性（任务包驱动）",
+        )
 
     llm_mode = os.getenv("GENERATION_MODE", "auto").lower()
     should_use_llm = llm_mode == "llm" or (
